@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Bariq">
+  <rect width="64" height="64" fill="#221a14"/>
+  <path fill="#c9ad82" d="M32 13.5l2.72 13.78L48.5 30l-13.78 2.72L32 46.5l-2.72-13.78L15.5 30l13.78-2.72z"/>
+  <circle cx="46" cy="46" r="2.1" fill="#a9865a"/>
+</svg>
