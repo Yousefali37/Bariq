@@ -6,7 +6,7 @@ import { usePageMeta } from '../hooks/usePageMeta'
 export default function NotFound() {
   usePageMeta(
     'Page not found',
-    'The page you were looking for could not be found. Return to the Bariq collection.',
+    'The page you were looking for could not be found. Return to the Bariq shop.',
   )
 
   return (
@@ -30,7 +30,7 @@ export default function NotFound() {
             Return home
             <ArrowUpRight size={15} />
           </Link>
-          <Link to="/collections" className="link-underline">
+          <Link to="/shop" className="link-underline">
             Explore the collection
           </Link>
         </div>

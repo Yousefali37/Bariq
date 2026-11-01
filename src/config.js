@@ -1,19 +1,21 @@
 // Runtime configuration comes from Vite environment variables so the same
-// build can be pointed at a different studio number, inbox or domain.
-// See `.env.example` for the full list.
+// build can be pointed at a different Instagram account or domain.
 const env = import.meta.env ?? {}
 
-const cleanUrl = (value) => value.replace(/\/+$/, '')
+const cleanUrl = (value) => (value || '').replace(/\/+$/, '')
 
 export const config = Object.freeze({
+  // Replace with the live domain before launch.
   siteUrl: cleanUrl(env.VITE_SITE_URL || 'https://bariq.studio'),
-  whatsapp: (env.VITE_WHATSAPP_NUMBER || '971501234567').replace(/[^\d]/g, ''),
-  whatsappDisplay: env.VITE_WHATSAPP_DISPLAY || '+971 50 123 4567',
-  email: env.VITE_CONTACT_EMAIL || 'concierge@bariq.studio',
+  // Orders are handled through Instagram DM only.
   instagramUrl: env.VITE_INSTAGRAM_URL || 'https://instagram.com/bariq.studio',
   instagramHandle: env.VITE_INSTAGRAM_HANDLE || '@bariq.studio',
-  defaultCurrency: (env.VITE_DEFAULT_CURRENCY || 'USD').toUpperCase(),
-  analyticsEnabled: env.VITE_ANALYTICS_ENABLED !== 'false',
+  // The catalogue is priced in Egyptian pounds only.
+  defaultCurrency: (env.VITE_DEFAULT_CURRENCY || 'EGP').toUpperCase(),
+  // No advertising or behavioural tracking is used on this site.
+  analyticsEnabled: env.VITE_ANALYTICS_ENABLED === 'true',
+  supabaseUrl: env.VITE_SUPABASE_URL || '',
+  supabaseAnonKey: env.VITE_SUPABASE_ANON_KEY || '',
 })
 
 export function absoluteUrl(path = '/') {

@@ -1,4 +1,3 @@
-import { journal } from '../data/journal'
 import { products } from '../data/products'
 import { readJson, writeJson } from './storage'
 
@@ -91,26 +90,13 @@ function productScore(product, term, tokens) {
   ])
 }
 
-function articleScore(article, term, tokens) {
-  return scoreFields(term, tokens, [
-    { value: article.title, weight: 100 },
-    { value: article.tags?.join(' '), weight: 56 },
-    { value: article.category, weight: 48 },
-    { value: article.excerpt, weight: 34 },
-    {
-      value: article.body?.map((block) => block.text).join(' '),
-      weight: 8,
-    },
-  ])
-}
-
 /**
  * Search the catalogue and journal with lightweight typo tolerance.
  * Returns products and articles separately so the UI can group them.
  */
 export function searchAll(query, { limit = 10 } = {}) {
   const term = normalise(query)
-  if (!term) return { products: [], articles: [], total: 0 }
+  if (!term) return { products: [], total: 0 }
 
   const tokens = term.split(' ').filter(Boolean)
 
@@ -124,20 +110,9 @@ export function searchAll(query, { limit = 10 } = {}) {
     .slice(0, limit)
     .map((hit) => hit.item)
 
-  const articleHits = journal
-    .map((article) => ({
-      item: article,
-      score: articleScore(article, term, tokens),
-    }))
-    .filter((hit) => hit.score > 0)
-    .sort((a, b) => b.score - a.score)
-    .slice(0, Math.max(3, Math.ceil(limit / 2)))
-    .map((hit) => hit.item)
-
   return {
     products: productHits,
-    articles: articleHits,
-    total: productHits.length + articleHits.length,
+    total: productHits.length,
   }
 }
 

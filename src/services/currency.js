@@ -1,31 +1,16 @@
-// Indicative display currencies. Product prices are authored in USD; these
-// static rates exist so international visitors can read a familiar figure.
-// Replace with a live rate feed (or a build-time snapshot) before launch.
+// The catalogue is authored and sold in Egyptian pounds. A single currency is
+// exposed so the rest of the site can keep using the same formatting helpers.
 export const currencies = [
   {
-    code: 'USD',
-    label: 'USD · US Dollar',
-    short: 'USD',
+    code: 'EGP',
+    label: 'EGP · Egyptian Pound',
+    short: 'EGP',
     rate: 1,
-    locale: 'en-US',
-  },
-  {
-    code: 'GBP',
-    label: 'GBP · Pound Sterling',
-    short: 'GBP',
-    rate: 0.79,
-    locale: 'en-GB',
-  },
-  {
-    code: 'AED',
-    label: 'AED · UAE Dirham',
-    short: 'AED',
-    rate: 3.6725,
-    locale: 'en-AE',
+    locale: 'en-EG',
   },
 ]
 
-export const DEFAULT_CURRENCY = 'USD'
+export const DEFAULT_CURRENCY = 'EGP'
 
 export function getCurrency(code = DEFAULT_CURRENCY) {
   return (
@@ -38,6 +23,8 @@ export function isCurrency(code) {
   return currencies.some((currency) => currency.code === code)
 }
 
+// Prices are already stored in EGP. Kept as a named helper so older callers
+// continue to work if the catalogue ever needs a conversion layer.
 export function convertFromUsd(amount, code = DEFAULT_CURRENCY) {
   return Math.round(amount * getCurrency(code).rate)
 }

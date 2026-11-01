@@ -1,12 +1,8 @@
 import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import {
-  buildWhatsAppLink,
-  navLinks,
-  productCategories,
-  site,
-} from '../data/site'
-import { ArrowUpRight, Close, Instagram, WhatsApp } from './Icons'
+import { navLinks, productCategories, site } from '../data/site'
+import { ArrowUpRight, Close, Instagram } from './Icons'
+import OrderButton from './OrderButton'
 
 export default function MobileMenu({ open, onClose }) {
   useEffect(() => {
@@ -54,13 +50,13 @@ export default function MobileMenu({ open, onClose }) {
 
         <div className="mobile-menu__sub">
           <div className="mobile-menu__group">
-            <span className="eyebrow">Collections</span>
+            <span className="eyebrow">Shop</span>
             {productCategories
               .filter((category) => category.id !== 'all')
               .map((category) => (
                 <Link
                   key={category.id}
-                  to={`/collections?category=${category.id}`}
+                  to={`/shop?category=${category.id}`}
                   onClick={onClose}
                 >
                   {category.label}
@@ -68,19 +64,18 @@ export default function MobileMenu({ open, onClose }) {
               ))}
           </div>
           <div className="mobile-menu__group">
-            <span className="eyebrow">Concierge</span>
-            <a
-              href={buildWhatsAppLink(
-                'Hello Bariq, I would like to speak with the concierge.',
-              )}
-              target="_blank"
-              rel="noreferrer"
-            >
-              WhatsApp
-            </a>
-            <a href={`mailto:${site.email}`}>Email</a>
+            <span className="eyebrow">Order</span>
+            <OrderButton
+              className="link-underline"
+              label="Instagram DM"
+              copiedLabel="Copied — opening Instagram"
+              iconSize={14}
+            />
             <Link to="/contact" onClick={onClose}>
-              Private appointments
+              Delivery &amp; payment
+            </Link>
+            <Link to="/terms" onClick={onClose}>
+              Returns
             </Link>
           </div>
         </div>
@@ -96,14 +91,6 @@ export default function MobileMenu({ open, onClose }) {
             aria-label="Bariq on Instagram"
           >
             <Instagram size={17} />
-          </a>
-          <a
-            href={buildWhatsAppLink('Hello Bariq, I have a question.')}
-            target="_blank"
-            rel="noreferrer"
-            aria-label="Bariq on WhatsApp"
-          >
-            <WhatsApp size={17} />
           </a>
         </div>
       </div>

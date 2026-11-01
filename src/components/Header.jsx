@@ -3,6 +3,7 @@ import { Link, NavLink } from 'react-router-dom'
 import { navLinks, site } from '../data/site'
 import { useSaved } from '../hooks/useSaved'
 import { Heart, Menu, SearchIcon } from './Icons'
+import OrderButton from './OrderButton'
 
 export default function Header({ onOpenMenu, onOpenSearch }) {
   const [scrolled, setScrolled] = useState(false)
@@ -67,9 +68,12 @@ export default function Header({ onOpenMenu, onOpenSearch }) {
             <span>Saved</span>
             <span className="header__count">({count})</span>
           </button>
-          <Link to="/contact" className="btn btn--dark btn--small header__cta">
-            Inquire
-          </Link>
+          <OrderButton
+            className="btn btn--dark btn--small header__cta"
+            label="Order"
+            copiedLabel="Opening Instagram"
+            iconSize={14}
+          />
         </div>
       </div>
     </header>

@@ -5,10 +5,11 @@
 // and JPEG derivatives into public/media, plus a generated manifest consumed
 // by <Picture>. Also builds the social sharing image at public/og-image.jpg.
 //
-//   npm run images
+// Top-level files keep their file name as the logical key. Product photography
+// in src/assets/images/Products/1.png … 21.png becomes product-1 … product-21,
+// matching the catalogue data.
 //
-// Photography arrives as JPEG placeholders today; swap the source files and
-// re-run — no component changes are required.
+//   npm run images
 // ---------------------------------------------------------------------------
 import { mkdir, readdir, writeFile } from 'node:fs/promises'
 import path from 'node:path'
@@ -17,6 +18,7 @@ import sharp from 'sharp'
 
 const root = process.cwd()
 const sourceDir = path.join(root, 'src', 'assets', 'images')
+const productsDir = path.join(sourceDir, 'Products')
 const outputDir = path.join(root, 'public', 'media')
 const manifestPath = path.join(
   root,
@@ -40,23 +42,45 @@ async function exists(file) {
   }
 }
 
+async function listImages(directory, prefix = '') {
+  let entries = []
+  try {
+    entries = await readdir(directory, { withFileTypes: true })
+  } catch {
+    return []
+  }
+
+  return entries
+    .filter((entry) => entry.isFile() && supported.test(entry.name))
+    .map((entry) => ({
+      file: path.join(directory, entry.name),
+      key: `${prefix}${entry.name.replace(supported, '')}`,
+    }))
+}
+
 async function main() {
   await mkdir(outputDir, { recursive: true })
   await mkdir(path.dirname(manifestPath), { recursive: true })
 
-  const files = (await readdir(sourceDir)).filter((file) =>
-    supported.test(file),
-  )
-  if (!files.length) {
+  const sources = [
+    ...(await listImages(sourceDir)),
+    ...(await listImages(productsDir, 'product-')),
+  ].sort((a, b) => a.key.localeCompare(b.key, 'en', { numeric: true }))
+
+  if (!sources.length) {
     throw new Error(`No source images found in ${sourceDir}`)
   }
 
   const manifest = {}
+  const seen = new Set()
 
-  for (const file of files.sort()) {
-    const key = file.replace(supported, '')
-    const input = path.join(sourceDir, file)
-    const meta = await sharp(input).metadata()
+  for (const { file, key } of sources) {
+    if (seen.has(key)) {
+      throw new Error(`Duplicate image key "${key}" in ${sourceDir}`)
+    }
+    seen.add(key)
+
+    const meta = await sharp(file).metadata()
 
     const targetWidths = [
       ...new Set([...WIDTHS.filter((width) => width < meta.width), meta.width]),
@@ -67,10 +91,15 @@ async function main() {
     for (const width of targetWidths) {
       const base = `${key}-${width}`
       for (const format of ['avif', 'webp', 'jpeg']) {
-        await sharp(input)
+        await sharp(file)
           .resize({ width, withoutEnlargement: true })
           .toFormat(format, { quality: QUALITY[format] })
-          .toFile(path.join(outputDir, `${base}.${format === 'jpeg' ? 'jpg' : format}`))
+          .toFile(
+            path.join(
+              outputDir,
+              `${base}.${format === 'jpeg' ? 'jpg' : format}`,
+            ),
+          )
       }
       srcSet.avif.push(`/media/${base}.avif ${width}w`)
       srcSet.webp.push(`/media/${base}.webp ${width}w`)
@@ -110,7 +139,7 @@ async function main() {
   }
 
   console.log(
-    `images: ${files.length} sources → ${Object.keys(manifest).length} manifest entries`,
+    `images: ${sources.length} sources → ${Object.keys(manifest).length} manifest entries`,
   )
 }
 

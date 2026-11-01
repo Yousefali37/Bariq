@@ -291,3 +291,23 @@ export function CheckMark({ size = 18, ...props }) {
     </svg>
   )
 }
+
+export function Truck({ size = 18, ...props }) {
+  return (
+    <svg viewBox="0 0 24 24" width={size} height={size} {...base} {...props}>
+      <path d="M3 6h11v10H3z" />
+      <path d="M14 10h4l3 3v3h-7" />
+      <circle cx="7" cy="18" r="1.6" />
+      <circle cx="18" cy="18" r="1.6" />
+    </svg>
+  )
+}
+
+export function Wallet({ size = 18, ...props }) {
+  return (
+    <svg viewBox="0 0 24 24" width={size} height={size} {...base} {...props}>
+      <path d="M4 7h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2Z" />
+      <path d="M16 12h4v4h-4a2 2 0 0 1 0-4Z" />
+    </svg>
+  )
+}

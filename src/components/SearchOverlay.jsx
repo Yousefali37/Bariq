@@ -1,12 +1,16 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { formatPrice, productCategories } from '../data/site'
-import { products } from '../data/products'
+import { productCategories } from '../data/site'
+import { resolveImage } from '../data/images'
+import { useCatalog } from '../hooks/useCatalog'
+import { useCurrency } from '../hooks/useCurrency'
 import { ArrowUpRight, Close, SearchIcon, Sparkle } from './Icons'
 
-const quickSearches = ['Pearl', 'Cuff', 'Clutch', 'Silk', 'Gold']
+const quickSearches = ['Gold', 'Silver', 'Pearl', 'Hoops', 'Ring']
 
 export default function SearchOverlay({ open, onClose }) {
+  const { products } = useCatalog()
+  const { format } = useCurrency()
   const [query, setQuery] = useState('')
   const [wasOpen, setWasOpen] = useState(open)
   const inputRef = useRef(null)
@@ -36,12 +40,21 @@ export default function SearchOverlay({ open, onClose }) {
     const term = query.trim().toLowerCase()
     if (!term) return []
     return products.filter((product) =>
-      [product.name, product.categoryLabel, product.short, product.materials]
+      [
+        product.name,
+        product.categoryLabel,
+        product.short,
+        product.description,
+        product.color,
+        product.materials?.join(' '),
+        product.materialFamilies?.join(' '),
+      ]
+        .filter(Boolean)
         .join(' ')
         .toLowerCase()
         .includes(term),
     )
-  }, [query])
+  }, [query, products])
 
   const goTo = (slug) => {
     onClose()
@@ -86,7 +99,7 @@ export default function SearchOverlay({ open, onClose }) {
               type="search"
               value={query}
               onChange={(event) => setQuery(event.target.value)}
-              placeholder="Try “pearl”, “cuff” or “silk”"
+              placeholder="Try “gold”, “pearl” or “hoops”"
               autoComplete="off"
             />
             {query ? (
@@ -108,7 +121,7 @@ export default function SearchOverlay({ open, onClose }) {
                   {results.map((product) => (
                     <li key={product.slug}>
                       <button type="button" onClick={() => goTo(product.slug)}>
-                        <img src={product.image} alt="" />
+                        <img src={resolveImage(product.image)} alt="" />
                         <span className="search-results__text">
                           <span className="search-results__category">
                             {product.categoryLabel}
@@ -116,7 +129,9 @@ export default function SearchOverlay({ open, onClose }) {
                           <span className="search-results__name">{product.name}</span>
                         </span>
                         <span className="search-results__price">
-                          {formatPrice(product.price)}
+                          {product.availability === 'sold-out'
+                            ? 'Sold out'
+                            : format(product.price)}
                         </span>
                         <ArrowUpRight size={16} />
                       </button>
@@ -127,7 +142,7 @@ export default function SearchOverlay({ open, onClose }) {
                 <div className="search-empty">
                   <Sparkle size={22} />
                   <p>No pieces found for “{query}”.</p>
-                  <span>Try a material, a category or a piece name.</span>
+                  <span>Try a finish, a category or a piece name.</span>
                 </div>
               )}
             </div>
@@ -154,7 +169,7 @@ export default function SearchOverlay({ open, onClose }) {
                         type="button"
                         onClick={() => {
                           onClose()
-                          navigate(`/collections?category=${category.id}`)
+                          navigate(`/shop?category=${category.id}`)
                         }}
                       >
                         {category.label}

@@ -1,64 +1,54 @@
 import { Link } from 'react-router-dom'
 import CircularSeal from '../components/CircularSeal'
 import Marquee from '../components/Marquee'
+import OrderButton from '../components/OrderButton'
+import Picture from '../components/Picture'
 import ProductCard from '../components/ProductCard'
 import Reveal from '../components/Reveal'
 import SectionHead from '../components/SectionHead'
-import { ArrowRight, ArrowUpRight, WhatsApp } from '../components/Icons'
-import { journal } from '../data/journal'
-import { products } from '../data/products'
-import { buildWhatsAppLink, formatPrice, site, values } from '../data/site'
+import Testimonials from '../components/Testimonials'
+import { ArrowRight, ArrowUpRight } from '../components/Icons'
+import { productCategories, site, values } from '../data/site'
+import { useCatalog } from '../hooks/useCatalog'
+import { useCurrency } from '../hooks/useCurrency'
 import { usePageMeta } from '../hooks/usePageMeta'
+import { graph, organizationJsonLd, websiteJsonLd } from '../services/seo'
 import heroImg from '../assets/images/hero.jpg'
 import stillLife from '../assets/images/still-life.jpg'
 import editorial from '../assets/images/editorial.jpg'
 import editorial2 from '../assets/images/editorial-2.jpg'
-import earringsPearl from '../assets/images/earrings-pearl.jpg'
-import hair from '../assets/images/hair.jpg'
-import clutch from '../assets/images/clutch.jpg'
-import sunglasses from '../assets/images/sunglasses.jpg'
-import scarf from '../assets/images/scarf.jpg'
 
-const categoryTiles = [
-  {
-    id: 'jewelry',
-    label: 'Jewelry',
-    note: 'Earrings, necklaces, cuffs',
-    image: earringsPearl,
-  },
-  { id: 'hair', label: 'Hair', note: 'Clips, claws, pins', image: hair },
-  { id: 'bags', label: 'Bags', note: 'Clutches & mini bags', image: clutch },
-  {
-    id: 'eyewear',
-    label: 'Eyewear',
-    note: 'Frames & lenses',
-    image: sunglasses,
-  },
-  { id: 'silk', label: 'Silk', note: 'Scarves & textiles', image: scarf },
-]
+const categoryImages = {
+  necklaces: 'product-3',
+  rings: 'product-8',
+  earrings: 'product-1',
+  bracelets: 'product-15',
+}
 
 const marqueeItems = [
-  'Hand-finished',
-  'Small batches',
-  '24k gold vermeil',
-  'Freshwater pearls',
-  'Made to be kept',
-]
-
-const atelierNotes = [
-  { label: 'Est.', value: '2026' },
-  { label: 'Made', value: 'By hand' },
-  { label: 'Shipping', value: 'Worldwide' },
+  'Waterproof stainless steel',
+  '18k gold PVD',
+  'Cash on delivery',
+  'Delivery across Egypt',
+  'Made to be worn',
 ]
 
 export default function Home() {
+  const { products } = useCatalog()
+  const { format } = useCurrency()
+
   usePageMeta(
     null,
-    'Bariq is a house of hand-finished jewelry and considered accessories — objects made to catch the light and be kept.',
+    'Bariq — waterproof stainless-steel jewelry in Egypt. Gold and silver necklaces, rings, earrings and bracelets, delivered to every governorate with cash on delivery.',
+    {
+      jsonLd: graph(organizationJsonLd(), websiteJsonLd()),
+      jsonLdId: 'home',
+    },
   )
 
   const featured = products.filter((product) => product.featured).slice(0, 4)
-  const latest = products.filter((product) => product.newest).slice(0, 1)[0]
+  const latest = products.find((product) => product.newest) || products[0]
+  const categories = productCategories.filter((category) => category.id !== 'all')
 
   return (
     <>
@@ -67,23 +57,23 @@ export default function Home() {
           <div className="home-hero__copy">
             <Reveal className="home-hero__eyebrow eyebrow" variant="fade">
               <span className="eyebrow__line" aria-hidden="true" />
-              Hand-finished · Dubai · Worldwide
+              Waterproof stainless steel · Cairo
             </Reveal>
 
             <Reveal as="h1" className="home-hero__title" delay={80}>
-              Objects of
+              Gold you can
               <br />
-              <em>quiet light.</em>
+              <em>live in.</em>
             </Reveal>
 
             <Reveal as="p" className="home-hero__lede" delay={170}>
-              Jewelry, silk and small objects made by hand in small batches —
-              designed to catch the light, and to be kept.
+              Waterproof stainless-steel jewelry in warm gold and quiet silver —
+              made to be worn in the shower, at the sea, and every day in between.
             </Reveal>
 
             <Reveal className="home-hero__actions" delay={250}>
-              <Link to="/collections" className="btn btn--dark">
-                Explore the collection
+              <Link to="/shop" className="btn btn--dark">
+                Shop the collection
                 <ArrowUpRight size={15} />
               </Link>
               <Link to="/story" className="link-underline">
@@ -94,9 +84,9 @@ export default function Home() {
 
             {latest ? (
               <Reveal className="home-hero__note" delay={330}>
-                <span className="home-hero__note-label">Now in the studio</span>
+                <span className="home-hero__note-label">New in the studio</span>
                 <Link to={`/piece/${latest.slug}`}>
-                  {latest.name} — {formatPrice(latest.price)}
+                  {latest.name} — {format(latest.price)}
                   <ArrowRight size={13} />
                 </Link>
               </Reveal>
@@ -107,7 +97,7 @@ export default function Home() {
             <Reveal className="home-hero__frame" variant="mask">
               <img
                 src={heroImg}
-                alt="A woman wearing sculptural gold earrings in warm afternoon light"
+                alt="A woman wearing sculptural gold jewelry in warm afternoon light"
                 fetchPriority="high"
               />
             </Reveal>
@@ -139,7 +129,7 @@ export default function Home() {
           <Reveal className="manifesto__media" variant="mask">
             <img
               src={stillLife}
-              alt="An arrangement of gold jewelry, silk and leather accessories"
+              alt="An arrangement of gold jewelry on a warm studio table"
               loading="lazy"
             />
             <span className="manifesto__media-caption">
@@ -154,31 +144,22 @@ export default function Home() {
             </Reveal>
 
             <Reveal as="h2" className="manifesto__title" delay={70}>
-              Made slowly,
+              Made to get wet,
               <br />
-              <em>worn always.</em>
+              <em>made to stay.</em>
             </Reveal>
 
             <Reveal as="p" className="manifesto__lede" delay={140}>
-              Bariq began with a simple idea: that the objects we wear closest to
-              the skin should be made with the same care as the ones we keep for
-              generations.
+              Bariq began with a simple idea: jewelry should not ask you to be
+              careful. Our pieces are made from high-grade stainless steel,
+              finished in gold or silver, and designed for real life.
             </Reveal>
 
             <Reveal as="p" className="manifesto__text" delay={190}>
-              We work in small batches, by hand, in a studio that prefers natural
-              light. Nothing is designed for a season. Every piece is meant to sit
-              easily with what you already own — and to grow more personal each
-              time you wear it.
-            </Reveal>
-
-            <Reveal className="manifesto__stats" delay={240}>
-              {atelierNotes.map((note) => (
-                <div className="manifesto__stat" key={note.label}>
-                  <span className="manifesto__stat-label">{note.label}</span>
-                  <span className="manifesto__stat-value">{note.value}</span>
-                </div>
-              ))}
+              We choose quiet shapes and a comfortable weight — pieces that sit
+              easily with what you already own and grow more personal each time
+              you wear them. No delicate plating, no taking it off before you
+              wash your hands.
             </Reveal>
 
             <Reveal className="manifesto__action" delay={280}>
@@ -191,17 +172,17 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="section categories">
+      <section className="section categories" id="shop">
         <div className="container">
           <SectionHead
-            eyebrow="Explore"
-            title="Five small worlds."
-            link={{ to: '/collections' }}
+            eyebrow="Shop"
+            title="Four small worlds."
+            link={{ to: '/shop' }}
             linkLabel="All pieces"
           />
 
           <div className="category-grid">
-            {categoryTiles.map((tile, index) => {
+            {categories.map((tile, index) => {
               const count = products.filter(
                 (product) => product.category === tile.id,
               ).length
@@ -209,14 +190,18 @@ export default function Home() {
               return (
                 <Reveal
                   as={Link}
-                  to={`/collections?category=${tile.id}`}
+                  to={`/shop?category=${tile.id}`}
                   className="category-card"
                   delay={index * 60}
                   key={tile.id}
                   data-cursor="view"
                 >
                   <div className="category-card__media">
-                    <img src={tile.image} alt={tile.label} loading="lazy" />
+                    <Picture
+                      name={categoryImages[tile.id]}
+                      alt={tile.label}
+                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                    />
                     <span className="category-card__index">
                       0{index + 1}
                     </span>
@@ -249,7 +234,7 @@ export default function Home() {
                 Pieces to <em>live in.</em>
               </>
             }
-            link={{ to: '/collections' }}
+            link={{ to: '/shop' }}
             linkLabel="View the collection"
           />
 
@@ -263,8 +248,8 @@ export default function Home() {
 
           <Reveal className="featured__note" variant="fade">
             <span className="featured__note-line" aria-hidden="true" />
-            Every piece is available by private inquiry — no cart, no hurry.
-            <Link to="/contact">Speak with the concierge</Link>
+            Every order is placed by Instagram DM — no cart, no checkout.
+            <Link to="/contact">How ordering works</Link>
           </Reveal>
         </div>
       </section>
@@ -285,24 +270,22 @@ export default function Home() {
               N° 01
             </span>
             <Reveal className="eyebrow eyebrow--gold" variant="fade">
-              The winter campaign
+              The everyday edit
             </Reveal>
             <Reveal as="h2" className="campaign__title" delay={70}>
               Warm gold,
               <br />
-              <em>low sun.</em>
+              <em>cool water.</em>
             </Reveal>
             <Reveal as="p" className="campaign__text" delay={140}>
-              A study in the hour before evening — hammered gold, bare skin, and
-              the particular quiet of a room at the end of the day.
+              A study in the pieces you never take off — a fine chain at the
+              collarbone, a hoop that catches the light, a bangle that stays on
+              through everything.
             </Reveal>
             <Reveal className="campaign__actions" delay={200}>
-              <Link to="/collections" className="btn btn--light">
-                Shop the campaign
+              <Link to="/shop" className="btn btn--light">
+                Shop the edit
                 <ArrowUpRight size={15} />
-              </Link>
-              <Link to="/journal/a-study-in-warm-light" className="link-underline link-underline--light">
-                Read the journal
               </Link>
             </Reveal>
           </div>
@@ -332,49 +315,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="section journal-preview">
-        <div className="container">
-          <SectionHead
-            eyebrow="The journal"
-            title={
-              <>
-                Notes from <em>the atelier.</em>
-              </>
-            }
-            link={{ to: '/journal' }}
-            linkLabel="All stories"
-          />
-
-          <div className="journal-grid">
-            {journal.map((article, index) => (
-              <Reveal
-                as="article"
-                className="journal-card"
-                delay={index * 70}
-                key={article.slug}
-              >
-                <Link
-                  to={`/journal/${article.slug}`}
-                  className="journal-card__media"
-                  aria-label={`Read ${article.title}`}
-                  data-cursor="view"
-                >
-                  <img src={article.cover} alt="" loading="lazy" />
-                </Link>
-                <div className="journal-card__meta">
-                  <span>{article.category}</span>
-                  <span>{article.displayDate}</span>
-                </div>
-                <h3 className="journal-card__title">
-                  <Link to={`/journal/${article.slug}`}>{article.title}</Link>
-                </h3>
-                <p className="journal-card__excerpt">{article.excerpt}</p>
-                <span className="journal-card__read">{article.readTime}</span>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
+      <Testimonials />
 
       <section className="concierge-cta">
         <div className="container concierge-cta__inner">
@@ -383,37 +324,31 @@ export default function Home() {
           </Reveal>
           <Reveal as="span" className="eyebrow" variant="fade">
             <span className="eyebrow__line" aria-hidden="true" />
-            The concierge
+            Ordering
           </Reveal>
           <Reveal as="h2" className="concierge-cta__title" delay={70}>
             A piece, chosen
             <br />
-            <em>with care.</em>
+            <em>in one message.</em>
           </Reveal>
           <Reveal as="p" className="concierge-cta__text" delay={140}>
-            Tell us what you are looking for — a gift, a wedding, a first piece of
-            gold. We will help you find it, and arrange delivery wherever you are.
+            Send us the piece you love and your city on Instagram. We will confirm
+            availability, the delivery fee and cash on delivery personally.
           </Reveal>
           <Reveal className="concierge-cta__actions" delay={200}>
-            <a
+            <OrderButton
               className="btn btn--dark"
-              href={buildWhatsAppLink(
-                'Hello Bariq, I would like help choosing a piece.',
-              )}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <WhatsApp size={17} />
-              Inquire on WhatsApp
-            </a>
+              message={`Hello ${site.name}, I would like help choosing a piece.`}
+              label="Message us on Instagram"
+            />
             <Link to="/contact" className="link-underline">
-              Or write to us
+              Delivery &amp; payment
               <ArrowUpRight size={14} />
             </Link>
           </Reveal>
           <Reveal className="concierge-cta__aside" variant="fade" delay={260}>
             <img src={editorial} alt="" loading="lazy" />
-            <span>Private appointments · Dubai · London · Worldwide</span>
+            <span>Delivery to all governorates · Cash on delivery</span>
           </Reveal>
         </div>
       </section>

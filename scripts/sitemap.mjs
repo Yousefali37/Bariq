@@ -8,8 +8,6 @@
 import { mkdir, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import process from 'node:process'
-import { edits } from '../src/data/edits.js'
-import { journal } from '../src/data/journal.js'
 import { products } from '../src/data/products.js'
 
 const siteUrl = (process.env.VITE_SITE_URL || 'https://bariq.studio').replace(
@@ -20,12 +18,10 @@ const today = new Date().toISOString().slice(0, 10)
 
 const staticPaths = [
   { path: '/', priority: '1.0', changefreq: 'weekly' },
-  { path: '/collections', priority: '0.9', changefreq: 'weekly' },
-  { path: '/edits', priority: '0.8', changefreq: 'monthly' },
-  { path: '/journal', priority: '0.8', changefreq: 'weekly' },
+  { path: '/shop', priority: '0.9', changefreq: 'weekly' },
+  { path: '/gallery', priority: '0.6', changefreq: 'monthly' },
   { path: '/story', priority: '0.6', changefreq: 'yearly' },
   { path: '/contact', priority: '0.6', changefreq: 'yearly' },
-  { path: '/search', priority: '0.3', changefreq: 'monthly' },
   { path: '/privacy', priority: '0.2', changefreq: 'yearly' },
   { path: '/terms', priority: '0.2', changefreq: 'yearly' },
 ]
@@ -36,16 +32,6 @@ const routes = [
     path: `/piece/${product.slug}`,
     priority: '0.7',
     changefreq: 'monthly',
-  })),
-  ...edits.map((edit) => ({
-    path: `/edits/${edit.slug}`,
-    priority: '0.6',
-    changefreq: 'monthly',
-  })),
-  ...journal.map((article) => ({
-    path: `/journal/${article.slug}`,
-    priority: '0.5',
-    changefreq: 'yearly',
   })),
 ]
 

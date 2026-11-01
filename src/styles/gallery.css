@@ -1,0 +1,215 @@
+/* ==========================================================================
+   Gallery
+   ========================================================================== */
+
+.gallery {
+  padding-block: clamp(28px, 4vw, 54px) clamp(64px, 9vw, 120px);
+}
+
+.gallery-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 22px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--line);
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(12px, 1.6vw, 24px);
+  margin-top: clamp(24px, 3vw, 40px);
+}
+
+.gallery-item {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  background: var(--ivory-2);
+  color: var(--ink);
+}
+
+.gallery-item img {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  transition: transform 1.2s var(--ease);
+}
+
+.gallery-item:hover img {
+  transform: scale(1.04);
+}
+
+.gallery-item figcaption {
+  position: absolute;
+  inset: auto 0 0 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 22px 16px 14px;
+  background: linear-gradient(transparent, rgba(34, 26, 20, 0.66));
+  color: var(--ivory);
+  font-size: 0.72rem;
+  letter-spacing: 0.02em;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.4s var(--ease), transform 0.4s var(--ease);
+}
+
+.gallery-item:hover figcaption,
+.gallery-item:focus-visible figcaption {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.gallery-item figcaption span {
+  font-size: 0.54rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold-soft);
+}
+
+.gallery-item figcaption strong {
+  font-family: var(--serif);
+  font-size: 0.98rem;
+  font-weight: 400;
+}
+
+.gallery-item figcaption svg {
+  margin-left: auto;
+}
+
+.gallery-item--tall img {
+  aspect-ratio: 3 / 4;
+}
+
+.gallery-grid--studio {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.gallery-grid--studio .gallery-item figcaption {
+  position: static;
+  background: none;
+  color: var(--muted);
+  opacity: 1;
+  transform: none;
+  padding: 10px 2px 0;
+  font-size: 0.58rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.gallery-item--wide {
+  grid-column: span 2;
+}
+
+.gallery-item--wide img {
+  aspect-ratio: 16 / 10;
+}
+
+.gallery-item--tall {
+  grid-row: span 2;
+}
+
+.gallery-studio {
+  margin-top: clamp(48px, 7vw, 90px);
+  padding-top: clamp(30px, 4vw, 50px);
+  border-top: 1px solid var(--line);
+}
+
+.gallery-studio__head h2 {
+  margin-top: 12px;
+  font-size: clamp(1.8rem, 3vw, 2.8rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+.gallery-studio__head h2 em {
+  font-style: italic;
+  color: var(--gold-deep);
+}
+
+.gallery-foot {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: clamp(30px, 6vw, 90px);
+  align-items: end;
+  margin-top: clamp(60px, 8vw, 110px);
+  padding-top: clamp(36px, 5vw, 60px);
+  border-top: 1px solid var(--line);
+}
+
+.gallery-foot h2 {
+  margin-top: 14px;
+  font-size: clamp(1.9rem, 3.2vw, 3rem);
+  line-height: 1.03;
+  letter-spacing: -0.025em;
+}
+
+.gallery-foot h2 em {
+  font-style: italic;
+  color: var(--gold-deep);
+}
+
+.gallery-foot p {
+  max-width: 46ch;
+  margin-top: 16px;
+  font-size: 0.9rem;
+  line-height: 1.8;
+  color: var(--muted);
+}
+
+.gallery-foot__actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+@media (max-width: 1024px) {
+  .gallery-grid,
+  .gallery-grid--studio {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .gallery-item--wide {
+    grid-column: span 2;
+  }
+
+  .gallery-foot {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+}
+
+@media (max-width: 640px) {
+  .gallery-filters {
+    gap: 14px;
+  }
+
+  .gallery-grid,
+  .gallery-grid--studio {
+    grid-template-columns: 1fr;
+  }
+
+  .gallery-item--wide {
+    grid-column: auto;
+  }
+
+  .gallery-item--tall {
+    grid-row: auto;
+  }
+
+  .gallery-item figcaption {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gallery-item img,
+  .gallery-item figcaption {
+    transition: none;
+  }
+}

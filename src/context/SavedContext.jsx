@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { products } from '../data/products'
+import { useCatalog } from '../hooks/useCatalog'
 import { SAVED_STORAGE_KEY, SavedContext, readSaved } from './savedStore'
 
 export function SavedProvider({ children }) {
+  const { products } = useCatalog()
   const [saved, setSaved] = useState(readSaved)
   const [isOpen, setIsOpen] = useState(false)
 
@@ -31,13 +32,10 @@ export function SavedProvider({ children }) {
   const openDrawer = useCallback(() => setIsOpen(true), [])
   const closeDrawer = useCallback(() => setIsOpen(false), [])
 
-  const savedProducts = useMemo(
-    () =>
-      saved
-        .map((slug) => products.find((product) => product.slug === slug))
-        .filter(Boolean),
-    [saved],
-  )
+  const savedProducts = useMemo(() => {
+    const lookup = new Map(products.map((product) => [product.slug, product]))
+    return saved.map((slug) => lookup.get(slug)).filter(Boolean)
+  }, [saved, products])
 
   const value = useMemo(
     () => ({

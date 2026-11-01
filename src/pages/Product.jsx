@@ -1,40 +1,139 @@
-import { useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import Accordion from '../components/Accordion'
+import Lightbox from '../components/Lightbox'
+import OrderButton from '../components/OrderButton'
+import Picture from '../components/Picture'
 import ProductCard from '../components/ProductCard'
+import ProductOptions from '../components/ProductOptions'
+import RecentlyViewed from '../components/RecentlyViewed'
 import Reveal from '../components/Reveal'
 import SectionHead from '../components/SectionHead'
+import ShareButton from '../components/ShareButton'
+import SizeGuide from '../components/SizeGuide'
 import {
-  ArrowRight,
   ArrowUpRight,
   Check,
+  Clock,
   Heart,
-  Mail,
-  WhatsApp,
+  Ruler,
+  ZoomIn,
 } from '../components/Icons'
-import { formatPrice, buildWhatsAppLink, site } from '../data/site'
-import { getProduct, getRelated } from '../data/products'
+import { getRelated } from '../data/products'
+import { resolveImage } from '../data/images'
+import { site } from '../data/site'
+import { useCatalog } from '../hooks/useCatalog'
+import { useCurrency } from '../hooks/useCurrency'
 import { useSaved } from '../hooks/useSaved'
+import { useRecentlyViewed } from '../hooks/useRecentlyViewed'
 import { usePageMeta } from '../hooks/usePageMeta'
+import {
+  breadcrumbJsonLd,
+  graph,
+  organizationJsonLd,
+  productJsonLd,
+} from '../services/seo'
+
+function normaliseValues(values = []) {
+  return values.map((value) =>
+    typeof value === 'string' ? { id: value, label: value } : value,
+  )
+}
+
+function initialSelection(product) {
+  if (!product?.options?.length) return {}
+  return Object.fromEntries(
+    product.options.map((option) => {
+      const values = normaliseValues(option.values)
+      return [option.id, values[0]?.id]
+    }),
+  )
+}
+
+function optionSummary(product, selection) {
+  if (!product?.options?.length) return []
+  return product.options
+    .map((option) => {
+      const chosen = normaliseValues(option.values).find(
+        (value) => value.id === selection[option.id],
+      )
+      return chosen ? `${option.label}: ${chosen.label}` : null
+    })
+    .filter(Boolean)
+}
 
 export default function Product() {
   const { slug } = useParams()
-  const product = getProduct(slug)
+  const { products, getProduct } = useCatalog()
+  const { format } = useCurrency()
   const { isSaved, toggleSaved } = useSaved()
-  const [activeImage, setActiveImage] = useState(0)
-  const [imageSlug, setImageSlug] = useState(slug)
+  const { recordView } = useRecentlyViewed()
 
-  // Reset the gallery when the visitor moves between pieces, without an effect.
-  if (imageSlug !== slug) {
-    setImageSlug(slug)
-    setActiveImage(0)
-  }
+  const product = getProduct(slug)
+  const [selectionState, setSelectionState] = useState({
+    slug: null,
+    values: {},
+  })
+  const [activeImage, setActiveImage] = useState(0)
+  const [lightboxOpen, setLightboxOpen] = useState(false)
+  const [sizeGuide, setSizeGuide] = useState(false)
+
+  const selection =
+    selectionState.slug === product?.slug
+      ? selectionState.values
+      : initialSelection(product)
+
+  const soldOut = product?.availability === 'sold-out'
+
+  useEffect(() => {
+    if (!product?.slug) return undefined
+    const timer = window.setTimeout(() => recordView(product.slug), 0)
+    return () => window.clearTimeout(timer)
+  }, [product?.slug, recordView])
+
+  const closeLightbox = () => setLightboxOpen(false)
+  const changeImage = (index) => setActiveImage(index)
+  const closeSizeGuide = () => setSizeGuide(false)
+
+  const images = product
+    ? product.gallery?.length
+      ? product.gallery
+      : [product.image]
+    : []
+  const imageUrls = images.map((image) => resolveImage(image))
+
+  const breadcrumbs = product
+    ? [
+        { name: 'Home', path: '/' },
+        { name: 'Shop', path: '/shop' },
+        {
+          name: product.categoryLabel || product.category,
+          path: `/shop?category=${product.category}`,
+        },
+        { name: product.name, path: `/piece/${product.slug}` },
+      ]
+    : []
 
   usePageMeta(
     product ? product.name : 'Piece not found',
     product
-      ? `${product.short} ${formatPrice(product.price)}. Available by private inquiry from Bariq.`
+      ? `${product.short || product.description?.slice(0, 120)} ${format(
+          product.price,
+        )} — waterproof stainless steel, delivered across Egypt.`
       : 'This piece could not be found.',
+    product
+      ? {
+          image: resolveImage(product.image),
+          imageAlt: product.name,
+          type: 'product',
+          url: `/piece/${product.slug}`,
+          jsonLd: graph(
+            productJsonLd({ ...product, image: resolveImage(product.image) }),
+            breadcrumbJsonLd(breadcrumbs),
+            organizationJsonLd(),
+          ),
+        }
+      : { noindex: true },
   )
 
   if (!product) {
@@ -47,8 +146,8 @@ export default function Product() {
             It may have sold, or the link may be old. The collection is just a
             moment away.
           </p>
-          <Link to="/collections" className="btn btn--dark">
-            Return to the collection
+          <Link to="/shop" className="btn btn--dark">
+            Return to the shop
             <ArrowUpRight size={15} />
           </Link>
         </div>
@@ -57,30 +156,42 @@ export default function Product() {
   }
 
   const saved = isSaved(product.slug)
-  const related = getRelated(product, 3)
-  const images = product.gallery?.length ? product.gallery : [product.image]
+  const summary = optionSummary(product, selection)
+  const optionDelta = (product.options || []).reduce((total, option) => {
+    const chosen = normaliseValues(option.values).find(
+      (value) => value.id === selection[option.id],
+    )
+    return total + (chosen?.priceDelta || 0)
+  }, 0)
+  const total = product.price + optionDelta
 
-  const message = `Hello Bariq, I would like to inquire about the ${product.name} (${formatPrice(
-    product.price,
-  )}). Is it available?`
+  const message = soldOut
+    ? `Hello ${site.name}, I would like to know when the ${product.name} (${format(
+        total,
+      )}) is back in stock.${summary.length ? `\n\n${summary.join('\n')}` : ''}\n\nMy city is: `
+    : `Hello ${site.name}, I would like to order the ${product.name} (${format(
+        total,
+      )}).${summary.length ? `\n\n${summary.join('\n')}` : ''}\n\nMy city is: \nPlease confirm availability, the delivery fee and cash on delivery.`
+
+  const relatedProducts = getRelated(product, 3, products)
 
   const accordionItems = [
     {
       title: 'Details',
-      content: product.details,
+      content: product.details || [],
     },
     {
-      title: 'Materials & dimensions',
-      content: [product.materials, product.dimensions],
+      title: 'Delivery & payment',
+      content: [
+        'Delivery to all Egyptian governorates. The shipping fee depends on your city and is confirmed on Instagram before dispatch.',
+        'Cash on delivery. You pay the courier when your order arrives.',
+        'In-stock pieces are usually dispatched within 1–2 business days. Made-to-order pieces take 2–3 weeks.',
+      ],
     },
     {
-      title: 'Care',
-      content: product.care,
-    },
-    {
-      title: 'Shipping & returns',
+      title: 'Returns',
       content:
-        'Shipped worldwide with tracked, insured delivery. In-stock pieces are dispatched within 2–3 business days. Unworn pieces may be returned within 14 days of delivery — please contact the concierge before returning anything.',
+        'If something is not right, message us on Instagram before returning anything. Unworn pieces in their original packaging can usually be returned within 14 days; made-to-order and personalised pieces are final sale.',
     },
   ]
 
@@ -91,10 +202,10 @@ export default function Product() {
           <nav className="breadcrumb" aria-label="Breadcrumb">
             <Link to="/">Home</Link>
             <span aria-hidden="true">/</span>
-            <Link to="/collections">Collections</Link>
+            <Link to="/shop">Shop</Link>
             <span aria-hidden="true">/</span>
-            <Link to={`/collections?category=${product.category}`}>
-              {product.categoryLabel}
+            <Link to={`/shop?category=${product.category}`}>
+              {product.categoryLabel || product.category}
             </Link>
             <span aria-hidden="true">/</span>
             <span aria-current="page">{product.name}</span>
@@ -103,19 +214,34 @@ export default function Product() {
           <div className="product-layout">
             <div className="product-gallery">
               <div className="product-gallery__main">
-                <img
+                <Picture
                   key={`${product.slug}-${activeImage}`}
-                  src={images[activeImage]}
+                  name={images[activeImage]}
                   alt={`${product.name} — view ${activeImage + 1}`}
-                  fetchPriority="high"
+                  sizes="(max-width: 900px) 100vw, 55vw"
+                  priority
+                  onClick={() => setLightboxOpen(true)}
                 />
-                {product.badge ? (
+                {soldOut ? (
+                  <span className="product-gallery__badge product-gallery__badge--sold">
+                    Sold out
+                  </span>
+                ) : product.badge ? (
                   <span className="product-gallery__badge">{product.badge}</span>
                 ) : null}
                 <span className="product-gallery__index">
                   {String(activeImage + 1).padStart(2, '0')} /{' '}
                   {String(images.length).padStart(2, '0')}
                 </span>
+                <button
+                  type="button"
+                  className="product-gallery__zoom"
+                  onClick={() => setLightboxOpen(true)}
+                  aria-label={`Open larger image of ${product.name}`}
+                >
+                  <ZoomIn size={17} />
+                  <span>View</span>
+                </button>
               </div>
 
               {images.length > 1 ? (
@@ -131,7 +257,7 @@ export default function Product() {
                       aria-label={`Show view ${index + 1} of ${product.name}`}
                       aria-current={activeImage === index}
                     >
-                      <img src={image} alt="" loading="lazy" />
+                      <img src={resolveImage(image)} alt="" loading="lazy" />
                     </button>
                   ))}
                 </div>
@@ -143,75 +269,112 @@ export default function Product() {
                 <div className="product-info__top">
                   <div>
                     <span className="product-info__category">
-                      {product.categoryLabel}
+                      {product.categoryLabel || product.category}
                     </span>
                     <h1 className="product-info__name">{product.name}</h1>
                   </div>
+                  <div className="product-info__tools">
+                    <button
+                      type="button"
+                      className={`save-button save-button--inline ${
+                        saved ? 'is-saved' : ''
+                      }`}
+                      onClick={() => toggleSaved(product.slug)}
+                      aria-pressed={saved}
+                      aria-label={
+                        saved
+                          ? `Remove ${product.name} from saved`
+                          : `Save ${product.name}`
+                      }
+                    >
+                      <Heart size={17} filled={saved} />
+                    </button>
+                    <ShareButton
+                      compact
+                      title={product.name}
+                      text={product.short}
+                      path={`/piece/${product.slug}`}
+                      className="share-button--inline"
+                    />
+                  </div>
+                </div>
+
+                <p className="product-info__price">{format(total)}</p>
+                {optionDelta ? (
+                  <p className="product-info__price-note">
+                    Base {format(product.price)}
+                    {` · options ${format(optionDelta)}`}
+                  </p>
+                ) : null}
+
+                <p className="product-info__short">{product.description}</p>
+
+                <div className={`product-availability is-${product.availability}`}>
+                  <span className="product-availability__dot" aria-hidden="true" />
+                  <div>
+                    <strong>{product.stockNote}</strong>
+                    <span>
+                      <Clock size={13} />
+                      {product.leadTime}
+                    </span>
+                  </div>
+                </div>
+
+                <ProductOptions
+                  options={product.options}
+                  value={selection}
+                  onChange={(optionId, value) =>
+                    setSelectionState({
+                      slug: product.slug,
+                      values: { ...selection, [optionId]: value },
+                    })
+                  }
+                  namePrefix={`piece-${product.slug}`}
+                />
+
+                {product.sizeGuide ? (
                   <button
                     type="button"
-                    className={`save-button save-button--inline ${
-                      saved ? 'is-saved' : ''
-                    }`}
-                    onClick={() => toggleSaved(product.slug)}
-                    aria-pressed={saved}
-                    aria-label={
-                      saved
-                        ? `Remove ${product.name} from saved`
-                        : `Save ${product.name}`
-                    }
+                    className="size-guide-trigger"
+                    onClick={() => setSizeGuide(true)}
                   >
-                    <Heart size={17} filled={saved} />
+                    <Ruler size={15} />
+                    Size guide
+                    <ArrowUpRight size={13} />
                   </button>
-                </div>
+                ) : null}
 
-                <p className="product-info__price">{formatPrice(product.price)}</p>
-                <p className="product-info__short">{product.short}</p>
-
-                <div className="product-info__color">
-                  <span className="product-info__color-label">Colour</span>
-                  <span className="product-info__swatch" aria-hidden="true" />
-                  <span>{product.color}</span>
-                </div>
+                {product.color ? (
+                  <div className="product-info__color">
+                    <span className="product-info__color-label">Finish</span>
+                    <span className="product-info__swatch" aria-hidden="true" />
+                    <span>{product.color}</span>
+                  </div>
+                ) : null}
 
                 <div className="product-info__actions">
-                  <a
+                  <OrderButton
                     className="btn btn--dark btn--full"
-                    href={buildWhatsAppLink(message)}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    <WhatsApp size={17} />
-                    Inquire on WhatsApp
-                  </a>
-                  <a
-                    className="btn btn--ghost btn--full"
-                    href={`mailto:${site.email}?subject=${encodeURIComponent(
-                      `Inquiry — ${product.name}`,
-                    )}&body=${encodeURIComponent(message)}`}
-                  >
-                    <Mail size={16} />
-                    Inquire by email
-                  </a>
+                    message={message}
+                    label={soldOut ? 'Ask about restock' : 'Order on Instagram'}
+                    copiedLabel="Copied — opening Instagram"
+                  />
                 </div>
 
                 <p className="product-info__note">
-                  Available by private inquiry. We will confirm availability,
-                  shipping and payment personally — usually within one working
-                  day.
+                  {soldOut
+                    ? 'This piece is currently sold out. Message us on Instagram and we will let you know when it returns.'
+                    : 'Every order is placed by Instagram DM. We will confirm availability, the delivery fee and cash on delivery personally.'}
                 </p>
 
                 <ul className="product-assurance">
                   <li>
                     <Check size={14} />
-                    Complimentary shipping over $250
+                    Waterproof stainless steel
                   </li>
                   <li>
                     <Check size={14} />
-                    Hand-finished in small batches
-                  </li>
-                  <li>
-                    <Check size={14} />
-                    Private appointments worldwide
+                    Cash on delivery across Egypt
                   </li>
                 </ul>
 
@@ -219,7 +382,7 @@ export default function Product() {
 
                 <div className="product-info__meta">
                   <span>Ref. {product.slug.toUpperCase()}</span>
-                  <span>{site.currency}</span>
+                  <span>Prices in EGP · Delivery fee confirmed by city</span>
                 </div>
               </div>
             </div>
@@ -234,13 +397,6 @@ export default function Product() {
           </Reveal>
           <Reveal className="product-story__body" delay={70}>
             <p className="product-story__lede">{product.description}</p>
-            <p className="product-story__quote">
-              “An object should feel inevitable — as though it already existed and
-              was simply waiting to be found.”
-            </p>
-            <span className="product-story__signature">
-              The Bariq studio
-            </span>
           </Reveal>
         </div>
       </section>
@@ -254,12 +410,12 @@ export default function Product() {
                 You may also <em>love.</em>
               </>
             }
-            link={{ to: '/collections' }}
+            link={{ to: '/shop' }}
             linkLabel="All pieces"
           />
 
           <div className="product-grid">
-            {related.map((item, index) => (
+            {relatedProducts.map((item, index) => (
               <Reveal
                 className="product-grid__item"
                 delay={index * 70}
@@ -272,21 +428,35 @@ export default function Product() {
         </div>
       </section>
 
+      <RecentlyViewed excludeSlug={product.slug} />
+
       <div className="product-mobile-bar">
         <div className="product-mobile-bar__text">
           <span>{product.name}</span>
-          <strong>{formatPrice(product.price)}</strong>
+          <strong>{format(total)}</strong>
         </div>
-        <a
+        <OrderButton
           className="btn btn--dark btn--small"
-          href={buildWhatsAppLink(message)}
-          target="_blank"
-          rel="noreferrer"
-        >
-          Inquire
-          <ArrowRight size={14} />
-        </a>
+          message={message}
+          label={soldOut ? 'Restock' : 'Order'}
+          copiedLabel="Opening Instagram"
+          iconSize={14}
+        />
       </div>
+
+      {lightboxOpen ? (
+        <Lightbox
+          images={imageUrls}
+          index={activeImage}
+          alt={product.name}
+          onClose={closeLightbox}
+          onIndexChange={changeImage}
+        />
+      ) : null}
+
+      {sizeGuide ? (
+        <SizeGuide kind={product.sizeGuide} onClose={closeSizeGuide} />
+      ) : null}
     </>
   )
 }

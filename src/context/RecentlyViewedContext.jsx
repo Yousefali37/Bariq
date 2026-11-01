@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { products } from '../data/products'
+import { useCatalog } from '../hooks/useCatalog'
 import { writeJson } from '../services/storage'
 import {
   RECENTLY_VIEWED_KEY,
@@ -9,6 +9,7 @@ import {
 } from './recentlyViewedStore'
 
 export function RecentlyViewedProvider({ children }) {
+  const { products } = useCatalog()
   const [slugs, setSlugs] = useState(readRecentlyViewed)
 
   useEffect(() => {
@@ -31,7 +32,7 @@ export function RecentlyViewedProvider({ children }) {
   const recentProducts = useMemo(() => {
     const lookup = new Map(products.map((product) => [product.slug, product]))
     return slugs.map((slug) => lookup.get(slug)).filter(Boolean)
-  }, [slugs])
+  }, [slugs, products])
 
   const value = useMemo(
     () => ({

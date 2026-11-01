@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { buildWhatsAppLink, sizeGuides } from '../data/site'
+import { buildInstagramLink, sizeGuides } from '../data/site'
 import { Close, Ruler } from './Icons'
 
 export default function SizeGuide({ kind, onClose }) {
@@ -92,13 +92,11 @@ export default function SizeGuide({ kind, onClose }) {
 
         <a
           className="link-underline"
-          href={buildWhatsAppLink(
-            'Hello Bariq, I would like help with sizing.',
-          )}
+          href={buildInstagramLink()}
           target="_blank"
           rel="noreferrer"
         >
-          Ask the concierge for a fitting
+          Ask us for sizing help on Instagram
         </a>
       </div>
     </div>

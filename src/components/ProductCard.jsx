@@ -1,14 +1,17 @@
 import { Link } from 'react-router-dom'
-import { formatPrice } from '../data/site'
+import { useCurrency } from '../hooks/useCurrency'
 import { useSaved } from '../hooks/useSaved'
 import { ArrowUpRight, Heart } from './Icons'
+import Picture from './Picture'
 
 export default function ProductCard({ product, priority = false }) {
   const { isSaved, toggleSaved } = useSaved()
+  const { format } = useCurrency()
   const saved = isSaved(product.slug)
+  const soldOut = product.availability === 'sold-out'
 
   return (
-    <article className="product-card">
+    <article className={`product-card ${soldOut ? 'is-sold-out' : ''}`.trim()}>
       <div className="product-card__media">
         <Link
           to={`/piece/${product.slug}`}
@@ -16,11 +19,11 @@ export default function ProductCard({ product, priority = false }) {
           aria-label={`View ${product.name}`}
           data-cursor="view"
         >
-          <img
-            src={product.image}
+          <Picture
+            name={product.image}
             alt={product.name}
-            loading={priority ? 'eager' : 'lazy'}
-            decoding="async"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+            priority={priority}
           />
           <span className="product-card__view">
             View piece
@@ -28,7 +31,11 @@ export default function ProductCard({ product, priority = false }) {
           </span>
         </Link>
 
-        {product.badge ? (
+        {soldOut ? (
+          <span className="product-card__badge product-card__badge--sold">
+            Sold out
+          </span>
+        ) : product.badge ? (
           <span className="product-card__badge">{product.badge}</span>
         ) : null}
 
@@ -50,7 +57,7 @@ export default function ProductCard({ product, priority = false }) {
             <Link to={`/piece/${product.slug}`}>{product.name}</Link>
           </h3>
         </div>
-        <span className="product-card__price">{formatPrice(product.price)}</span>
+        <span className="product-card__price">{format(product.price)}</span>
       </div>
     </article>
   )

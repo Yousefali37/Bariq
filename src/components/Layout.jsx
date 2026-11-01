@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
-import { announcement } from '../data/site'
 import { useSaved } from '../hooks/useSaved'
 import Cursor from './Cursor'
 import Footer from './Footer'
@@ -51,14 +50,6 @@ export default function Layout() {
       </a>
       <ScrollProgress />
       <Cursor />
-
-      <div className="announcement">
-        <div className="announcement__inner container">
-          <span className="announcement__dot" aria-hidden="true" />
-          <p>{announcement}</p>
-          <span className="announcement__dot" aria-hidden="true" />
-        </div>
-      </div>
 
       <Header
         onOpenMenu={() => setMenuRoute(routeKey)}

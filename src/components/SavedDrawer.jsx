@@ -1,11 +1,15 @@
 import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { buildWhatsAppLink, formatPrice } from '../data/site'
+import { site } from '../data/site'
+import { useCurrency } from '../hooks/useCurrency'
 import { useSaved } from '../hooks/useSaved'
-import { ArrowUpRight, Close, Sparkle, Trash, WhatsApp } from './Icons'
+import { resolveImage } from '../data/images'
+import { ArrowUpRight, Close, Sparkle, Trash } from './Icons'
+import OrderButton from './OrderButton'
 
 export default function SavedDrawer() {
   const { savedProducts, count, isOpen, closeDrawer, removeSaved } = useSaved()
+  const { format } = useCurrency()
 
   useEffect(() => {
     if (!isOpen) return undefined
@@ -17,10 +21,10 @@ export default function SavedDrawer() {
   }, [isOpen, closeDrawer])
 
   const message = savedProducts.length
-    ? `Hello Bariq, I would like to inquire about these saved pieces:\n\n${savedProducts
-        .map((product) => `• ${product.name} — ${formatPrice(product.price)}`)
-        .join('\n')}\n\nCould you share availability and shipping details?`
-    : 'Hello Bariq, I would like help choosing a piece.'
+    ? `Hello ${site.name}, I would like to order these saved pieces:\n\n${savedProducts
+        .map((product) => `• ${product.name} — ${format(product.price)}`)
+        .join('\n')}\n\nMy city is: \nPlease confirm availability, the delivery fee and cash on delivery.`
+    : `Hello ${site.name}, I would like help choosing a piece.`
 
   return (
     <div
@@ -43,7 +47,7 @@ export default function SavedDrawer() {
       >
         <div className="saved-drawer__head">
           <div>
-            <span className="eyebrow">Your selection</span>
+            <span className="eyebrow">Your wishlist</span>
             <h2>
               Saved pieces <span>({count})</span>
             </h2>
@@ -70,14 +74,18 @@ export default function SavedDrawer() {
                     tabIndex={-1}
                     aria-hidden="true"
                   >
-                    <img src={product.image} alt="" />
+                    <img src={resolveImage(product.image)} alt="" />
                   </Link>
                   <div className="saved-item__text">
                     <span className="saved-item__category">{product.categoryLabel}</span>
                     <Link to={`/piece/${product.slug}`} onClick={closeDrawer}>
                       <h3>{product.name}</h3>
                     </Link>
-                    <span className="saved-item__price">{formatPrice(product.price)}</span>
+                    <span className="saved-item__price">
+                      {product.availability === 'sold-out'
+                        ? 'Sold out'
+                        : format(product.price)}
+                    </span>
                   </div>
                   <button
                     type="button"
@@ -92,18 +100,18 @@ export default function SavedDrawer() {
             </div>
 
             <div className="saved-drawer__foot">
-              <a
+              <OrderButton
                 className="btn btn--dark btn--full"
-                href={buildWhatsAppLink(message)}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <WhatsApp size={17} />
-                Inquire about saved pieces
-              </a>
-              <p>We will confirm availability, shipping and payment personally.</p>
+                message={message}
+                label="Order saved pieces on Instagram"
+                copiedLabel="Copied — opening Instagram"
+              />
+              <p>
+                We will confirm availability, the delivery fee and cash on
+                delivery personally.
+              </p>
               <Link to="/contact" className="link-underline" onClick={closeDrawer}>
-                Or write to the concierge
+                Delivery &amp; payment details
                 <ArrowUpRight size={13} />
               </Link>
             </div>
@@ -116,7 +124,7 @@ export default function SavedDrawer() {
               Save pieces as you browse and they will wait for you here — a quiet
               shortlist for when you are ready.
             </p>
-            <Link to="/collections" className="btn btn--dark" onClick={closeDrawer}>
+            <Link to="/shop" className="btn btn--dark" onClick={closeDrawer}>
               Explore the collection
             </Link>
           </div>

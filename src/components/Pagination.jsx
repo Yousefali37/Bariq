@@ -48,9 +48,8 @@ export default function Pagination({
             <li key={item}>
               <button
                 type="button"
-                className={`pagination__page ${
-                  item === page ? 'is-current' : ''
-                }`}
+                className={`pagination__page ${item === page ? 'is-current' : ''
+                  }`}
                 onClick={() => onPage(item)}
                 aria-current={item === page ? 'page' : undefined}
                 aria-label={`Page ${item}`}

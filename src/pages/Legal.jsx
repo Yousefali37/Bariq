@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { ArrowUpRight } from '../components/Icons'
+import { ArrowUpRight, Instagram } from '../components/Icons'
 import { site } from '../data/site'
 import { usePageMeta } from '../hooks/usePageMeta'
 
@@ -9,43 +9,44 @@ const content = {
     title: 'Privacy',
     intro:
       'We keep the amount of information we hold to a minimum, and we do not sell it. This page explains what we collect, why, and what you can ask us to do with it.',
-    updated: 'Last updated 1 October 2026',
+    updated: 'Last updated 1 November 2026',
     sections: [
       {
         heading: 'What we collect',
         body: [
-          'When you contact us by WhatsApp, email or the concierge form, we receive the details you choose to share — typically your name, email address, phone number and the content of your message. If you place an order, we also keep the delivery address and order details needed to fulfil it.',
-          'If you subscribe to our notes, we store your email address and the date you subscribed. We do not use tracking pixels or advertising cookies on this site.',
+          'Bariq is a catalogue site. There are no accounts, no checkout and no newsletter. When you message us on Instagram, Instagram shares the details you choose to send — typically your Instagram handle, your city and the piece you are asking about. We use those details only to answer your message and arrange your order.',
+          'If you place an order, we also keep the delivery address and order details needed to fulfil it.',
         ],
       },
       {
         heading: 'How we use it',
         body: [
-          'We use your information to answer your inquiry, arrange and deliver your order, provide aftercare, and — only if you have asked — send occasional studio notes. We do not use your information for automated decision-making or profiling.',
+          'We use your information to answer your inquiry, arrange and deliver your order, and provide aftercare. We do not use your information for automated decision-making or profiling, and we do not send marketing messages unless you ask us to.',
         ],
       },
       {
         heading: 'Storage on your device',
         body: [
-          'The site stores your saved pieces in your browser’s local storage so that they are waiting for you when you return. This information stays on your device and is not sent to us. You can clear it at any time by removing the saved pieces or clearing your browser data.',
+          'The site stores your saved pieces and recently viewed pieces in your browser’s local storage so they are waiting for you when you return. This information stays on your device and is not sent to us. You can clear it at any time by removing saved pieces or clearing your browser data.',
+          'The site does not use advertising cookies, tracking pixels or behavioural analytics.',
         ],
       },
       {
         heading: 'Sharing',
         body: [
-          'We share information only with the people needed to complete your order — for example, a courier or a payment provider. We do not sell, rent or trade your information. Where a service provider handles data on our behalf, they are required to protect it and use it only for the agreed purpose.',
+          'We share information only with the people needed to complete your order — for example, the courier delivering your parcel. We do not sell, rent or trade your information.',
         ],
       },
       {
         heading: 'Your rights',
         body: [
-          `You may ask us for a copy of the information we hold about you, ask us to correct or delete it, or ask us to stop sending you notes. Write to ${site.email} and we will respond within a reasonable period.`,
+          `You may ask us for a copy of the information we hold about you, ask us to correct or delete it, or ask us to stop contacting you. Message us on Instagram at ${site.instagramHandle} and we will respond within a reasonable period.`,
         ],
       },
       {
         heading: 'Contact',
         body: [
-          `Bariq, ${site.location}. For any privacy question, write to ${site.email}.`,
+          `Bariq, ${site.location}. For any privacy question, message us on Instagram at ${site.instagramHandle}.`,
         ],
       },
     ],
@@ -54,43 +55,49 @@ const content = {
     eyebrow: 'Legal',
     title: 'Terms',
     intro:
-      'These terms cover the use of this website and inquiries made through it. They are written to be read, not to be hidden behind.',
-    updated: 'Last updated 1 October 2026',
+      'These terms cover the use of this website and orders placed through Instagram. They are written to be read, not to be hidden behind.',
+    updated: 'Last updated 1 November 2026',
     sections: [
       {
         heading: 'About this site',
         body: [
-          'This website is a showcase of the Bariq collection. Pieces are offered by private inquiry rather than through an online checkout. Prices are shown in US dollars and are indicative until confirmed by the concierge.',
+          'This website is a catalogue of the Bariq collection. Pieces are offered by Instagram DM rather than through an online checkout. Prices are shown in Egyptian pounds (EGP) and are confirmed with you before an order is placed.',
         ],
       },
       {
-        heading: 'Inquiries and orders',
+        heading: 'Orders',
         body: [
-          'An inquiry does not create a binding order. An order is confirmed only when we have confirmed availability, the final price including shipping and duties where applicable, and payment arrangements in writing. We may decline an inquiry at our discretion, including where a piece is no longer available.',
+          'An Instagram message is an inquiry, not a binding order. An order is confirmed only when we have confirmed availability, the final price including the delivery fee for your city, and cash on delivery arrangements in writing. We may decline an inquiry at our discretion, including where a piece is no longer available.',
         ],
       },
       {
         heading: 'Pricing and payment',
         body: [
-          'Prices may change without notice. The price confirmed by the concierge at the time of your order is the price that applies. Duties, taxes and any import fees are quoted separately and are the responsibility of the customer unless stated otherwise.',
+          'Prices are shown in EGP and may change without notice. The price confirmed on Instagram at the time of your order is the price that applies. Payment is cash on delivery unless we agree otherwise in writing.',
         ],
       },
       {
-        heading: 'Shipping',
+        heading: 'Delivery',
         body: [
-          'We ship worldwide with tracked, insured delivery. In-stock pieces are usually dispatched within 2–3 business days. Made-to-order and personalised pieces take longer; we will confirm the expected timing before you commit. Delivery times vary by destination and are outside our control once a parcel is with the courier.',
+          'We deliver to all Egyptian governorates. The delivery fee depends on your city and is confirmed before dispatch. In-stock pieces are usually dispatched within 1–2 business days; made-to-order pieces take 2–3 weeks. Delivery times vary by governorate and are outside our control once a parcel is with the courier.',
         ],
       },
       {
         heading: 'Returns',
         body: [
-          'Unworn pieces in their original packaging may be returned within 14 days of delivery, after contacting the concierge. Made-to-order, personalised and earring pieces are final sale for hygiene and custom reasons. Return shipping is the responsibility of the customer unless the piece is faulty.',
+          'If something is not right, message us on Instagram before returning anything. Unworn pieces in their original packaging can usually be returned within 14 days of delivery. Made-to-order, personalised and earring pieces are final sale for hygiene and custom reasons. Return shipping is the responsibility of the customer unless the piece is faulty.',
+        ],
+      },
+      {
+        heading: 'Sold-out pieces',
+        body: [
+          'Sold-out pieces remain visible on the site so you can still see them and save them to your wishlist. A sold-out label does not guarantee a restock. Message us on Instagram and we will let you know if and when a piece returns.',
         ],
       },
       {
         heading: 'Care and variation',
         body: [
-          'Because pieces are made by hand and many materials are natural, slight variations in shape, colour and surface are expected and are part of the character of the piece. Follow the care guidance provided with your order. Damage caused by misuse, perfume, water or improper storage is not covered.',
+          'Our pieces are made from high-grade stainless steel with a PVD gold or brushed silver finish. They are designed to be worn in water, but we recommend avoiding harsh chemicals, chlorine and perfume to keep the finish looking its best. Rinse with fresh water after swimming and dry with a soft cloth.',
         ],
       },
       {
@@ -102,7 +109,7 @@ const content = {
       {
         heading: 'Contact',
         body: [
-          `Questions about these terms can be sent to ${site.email}. Bariq, ${site.location}.`,
+          `Questions about these terms can be sent to us on Instagram at ${site.instagramHandle}. Bariq, ${site.location}.`,
         ],
       },
     ],
@@ -114,7 +121,7 @@ export default function Legal({ kind = 'privacy' }) {
 
   usePageMeta(
     page.title,
-    `${page.title} for Bariq — the house of hand-finished jewelry and considered accessories.`,
+    `${page.title} for Bariq — waterproof stainless-steel jewelry in Egypt, ordered by Instagram DM with cash on delivery.`,
   )
 
   return (
@@ -134,7 +141,7 @@ export default function Legal({ kind = 'privacy' }) {
             <Link to="/terms" className={kind === 'terms' ? 'is-active' : undefined}>
               Terms
             </Link>
-            <Link to="/contact">Concierge</Link>
+            <Link to="/contact">Ordering &amp; contact</Link>
           </nav>
           <Link to="/" className="link-underline legal__back">
             Back to Bariq
@@ -156,7 +163,10 @@ export default function Legal({ kind = 'privacy' }) {
 
           <div className="legal__foot">
             <span>© {new Date().getFullYear()} {site.name}</span>
-            <a href={`mailto:${site.email}`}>{site.email}</a>
+            <a href={site.instagram} target="_blank" rel="noreferrer">
+              <Instagram size={14} />
+              {site.instagramHandle}
+            </a>
           </div>
         </div>
       </div>

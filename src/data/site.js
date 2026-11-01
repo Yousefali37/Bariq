@@ -4,76 +4,74 @@ import { formatMoney } from '../services/currency'
 export const site = {
   name: 'Bariq',
   nameAr: 'بريق',
-  tagline: 'Objects of quiet light.',
+  tagline: 'Waterproof stainless steel jewelry.',
   description:
-    'Bariq is a house of hand-finished jewelry and considered accessories — objects made to catch the light and be kept.',
+    'Bariq is an Egyptian jewelry house crafting waterproof stainless-steel pieces in gold and silver finishes — necklaces, rings, earrings and bracelets, delivered across Egypt.',
   url: config.siteUrl,
-  whatsapp: config.whatsapp,
-  whatsappDisplay: config.whatsappDisplay,
-  email: config.email,
   instagram: config.instagramUrl,
   instagramHandle: config.instagramHandle,
-  location: 'Dubai · London · Worldwide',
-  hours: 'Sunday – Thursday, 10:00 – 18:00 GST',
-  appointment:
-    'Private appointments are available in Dubai and London, and virtually worldwide.',
-  currency: 'USD',
+  location: 'Cairo, Egypt · Delivery to all governorates',
+  hours: 'Saturday – Thursday, 10:00 – 20:00 EET',
+  currency: 'EGP',
+  orderNote:
+    'Every order is placed by Instagram DM. Send us the piece you love and we will confirm availability, delivery and cash on delivery personally.',
+  paymentNote: 'Cash on delivery',
+  deliveryNote:
+    'Delivery to all Egyptian governorates. The shipping fee depends on your city and is confirmed before dispatch.',
+  returnsNote:
+    'If something is not right, message us on Instagram before returning anything and we will find a solution together.',
   shippingNote:
-    'Complimentary worldwide shipping over $250. Duties and taxes are quoted with your order.',
+    'Delivery to all governorates. Shipping is calculated by city and paid in cash on delivery.',
 }
 
 export const navLinks = [
-  { label: 'Collections', to: '/collections' },
-  { label: 'Edits', to: '/edits' },
-  { label: 'Journal', to: '/journal' },
+  { label: 'Shop', to: '/shop' },
   { label: 'Our Story', to: '/story' },
+  { label: 'Gallery', to: '/gallery' },
+  { label: 'Contact', to: '/contact' },
 ]
 
-export const announcement =
-  'Complimentary worldwide shipping over $250 · Private appointments · Hand-finished in small batches'
-
 export const productCategories = [
-  { id: 'all', label: 'All pieces' },
-  { id: 'jewelry', label: 'Jewelry' },
-  { id: 'hair', label: 'Hair' },
-  { id: 'bags', label: 'Bags' },
-  { id: 'eyewear', label: 'Eyewear' },
-  { id: 'silk', label: 'Silk' },
+  { id: 'all', label: 'All pieces', note: 'The complete collection' },
+  { id: 'necklaces', label: 'Necklaces', note: 'At the collarbone' },
+  { id: 'rings', label: 'Rings', note: 'For every finger' },
+  { id: 'earrings', label: 'Earrings', note: 'Light at the ear' },
+  { id: 'bracelets', label: 'Bracelets', note: 'On the wrist' },
 ]
 
 export const values = [
   {
     number: 'I',
-    title: 'Hand-finished',
-    body: 'Every piece is shaped, polished and assembled by hand in small batches. The slight irregularities are not flaws — they are the signature of the maker.',
+    title: 'Made to get wet',
+    body: 'Every piece is crafted from high-grade stainless steel, so it can follow you from the shower to the sea. Waterproof, tarnish-resistant and made for real life.',
   },
   {
     number: 'II',
-    title: 'Considered materials',
-    body: 'Recycled sterling silver, 24k gold vermeil, freshwater pearls, Italian leather and plant-based acetate. Chosen for how they age, not how they photograph.',
+    title: 'Gold that stays gold',
+    body: 'Our warm gold finish is applied with a durable PVD process over stainless steel. It keeps its colour through daily wear — no delicate plating to protect.',
   },
   {
     number: 'III',
-    title: 'Made to be kept',
-    body: 'We design against the season. Pieces that sit easily with what you already own, and grow more personal with every wear.',
+    title: 'Designed for every day',
+    body: 'Quiet shapes, comfortable weight and a finish that works with everything you already own. Pieces to put on and forget you are wearing.',
   },
 ]
 
 export const process = [
   {
     number: '01',
-    title: 'Source',
-    body: 'We begin with material — a baroque pearl with an imperfect silhouette, a hide with a soft hand, a length of mulberry silk. The object follows the material.',
+    title: 'Choose',
+    body: 'We begin with high-grade 316L stainless steel — chosen for its strength, its resistance to water and its ability to hold a fine polish.',
   },
   {
     number: '02',
-    title: 'Shape',
-    body: 'Forms are drawn by hand, then refined until they feel inevitable. We remove everything that does not earn its place.',
+    title: 'Finish',
+    body: 'Each piece is shaped, polished and finished in gold PVD or brushed silver. The finish is bonded to the steel rather than layered on top.',
   },
   {
     number: '03',
-    title: 'Finish',
-    body: 'Each piece is polished, inspected and wrapped in the studio. No two catch the light in exactly the same way.',
+    title: 'Check',
+    body: 'Every order is inspected by hand, wrapped carefully and sent from Cairo to your door — anywhere in Egypt.',
   },
 ]
 
@@ -81,66 +79,66 @@ export const faqs = [
   {
     id: 'order',
     title: 'How do I place an order?',
-    body: 'Every piece is available by private inquiry. Use the WhatsApp button on any product page or write to our concierge. We will confirm availability, shipping and payment personally.',
+    body: 'Orders are placed through Instagram DM. Open any piece, tap “Order on Instagram”, and send us the piece name and your city. We will confirm availability, the delivery fee and cash on delivery.',
   },
   {
-    id: 'shipping',
-    title: 'Do you ship worldwide?',
-    body: 'Yes. Orders are shipped worldwide with tracked, insured delivery. Shipping is complimentary on orders over $250. Duties and taxes are quoted with your order.',
+    id: 'waterproof',
+    title: 'Is the jewelry really waterproof?',
+    body: 'Yes. Our pieces are made from high-grade stainless steel with a PVD gold or silver finish. They are designed to be worn in water and will not tarnish like plated brass. We still recommend avoiding harsh chemicals and perfume to keep the finish looking its best.',
   },
   {
-    id: 'lead-time',
-    title: 'How long will my piece take?',
-    body: 'In-stock pieces are dispatched within 2–3 business days. Made-to-order and personalized pieces take 2–3 weeks, and we will keep you updated at every stage.',
+    id: 'delivery',
+    title: 'Do you deliver outside Cairo?',
+    body: 'We deliver to all Egyptian governorates. The shipping fee depends on your city and is confirmed with you on Instagram before dispatch. Orders are usually delivered within 2–5 working days.',
   },
   {
-    id: 'appointments',
-    title: 'Can I request a private appointment?',
-    body: 'Absolutely. We offer private appointments in Dubai and London, and virtual appointments worldwide. Tell us what you are looking for and we will arrange a time.',
+    id: 'payment',
+    title: 'How do I pay?',
+    body: 'We offer cash on delivery. You pay the courier when your order arrives. The exact total, including the city delivery fee, is confirmed before dispatch.',
   },
   {
-    id: 'care',
-    title: 'How should I care for my pieces?',
-    body: 'Store gold vermeil and pearls in the pouch provided, away from perfume, water and direct sunlight. Polish gently with a soft, dry cloth. We are happy to advise on care for any piece.',
-  },
-  {
-    id: 'returns',
-    title: 'What is your return policy?',
-    body: 'Unworn pieces in their original packaging may be returned within 14 days of delivery. Made-to-order and personalized pieces are final sale. Please contact the concierge before returning anything.',
-  },
-  {
-    id: 'engraving',
-    title: 'Can a piece be engraved or gift-wrapped?',
-    body: 'Gift wrapping is complimentary on every order. Hand engraving is available on selected gold pieces for $25 and adds 3–5 days. Choose your options on the piece page and we will confirm the wording with you before work begins.',
+    id: 'sold-out',
+    title: 'What does “Sold out” mean?',
+    body: 'Sold-out pieces stay on the site so you can still see them and save them to your wishlist. Message us on Instagram and we will let you know when the piece is back.',
   },
   {
     id: 'sizing',
     title: 'How do I find my ring or chain size?',
-    body: 'Each piece page includes a size guide with ring diameters, chain lengths and bracelet measurements. If you are between sizes, the concierge can advise — or arrange a virtual fitting.',
+    body: 'Each piece page includes a size guide with ring diameters, chain lengths and bracelet measurements. If you are between sizes, send us a message on Instagram and we will help you choose.',
+  },
+  {
+    id: 'care',
+    title: 'How should I care for my pieces?',
+    body: 'Rinse with fresh water after swimming, dry with a soft cloth, and store separately to avoid scratches. Avoid perfume, chlorine and abrasive cleaners. Stainless steel is forgiving, but a little care keeps the finish bright.',
+  },
+  {
+    id: 'returns',
+    title: 'Can I return a piece?',
+    body: 'If something is not right, message us on Instagram before returning anything. Unworn pieces in their original packaging can usually be returned within 14 days; made-to-order and personalised pieces are final sale.',
   },
 ]
 
 export const testimonials = [
   {
     quote:
-      'The cuff arrived wrapped like something from an archive. It has not left my wrist since.',
-    name: 'Mira',
-    place: 'Dubai',
-    piece: 'Nour Cuff',
+      'I wear the gold necklace in the shower, at the gym and to the sea. It still looks new.',
+    name: 'Mariam',
+    place: 'Cairo',
+    piece: 'Nadia Coin Necklace',
   },
   {
     quote:
-      'I asked for a pearl that leaned a little to the left. They found one. That is the whole house, really.',
-    name: 'Lena',
-    place: 'London',
-    piece: 'Mira Pearl Drops',
+      'The earrings are light enough for all day and the gold is exactly the warm tone I wanted.',
+    name: 'Nour',
+    place: 'Alexandria',
+    piece: 'Nour Drop Earrings',
   },
   {
     quote:
-      'A quiet, personal service — and a clutch that survived a wedding, a flight and a very long evening.',
-    name: 'Sara',
-    place: 'New York',
-    piece: 'Doha Mini Clutch',
+      'Ordering on Instagram was simple, and the delivery to Assiut was faster than I expected.',
+    name: 'Salma',
+    place: 'Assiut',
+    piece: 'Aya Bangle',
   },
 ]
 
@@ -148,7 +146,7 @@ export const sizeGuides = {
   rings: {
     title: 'Ring sizes',
     intro:
-      'Measure the inner diameter of a ring that fits you, or wrap a strip of paper around your finger and measure its length. If you are between sizes, choose the larger — or ask us.',
+      'Measure the inner diameter of a ring that fits you, or wrap a strip of paper around your finger and measure its length. If you are between sizes, choose the larger — or ask us on Instagram.',
     columns: ['Bariq size', 'Inner diameter', 'Circumference', 'UK', 'US'],
     rows: [
       ['5', '15.7 mm', '49.3 mm', 'J½', '5'],
@@ -157,49 +155,55 @@ export const sizeGuides = {
       ['8', '18.1 mm', '57.0 mm', 'P½', '8'],
       ['9', '18.9 mm', '59.5 mm', 'R½', '9'],
     ],
-    note: 'Hand-finished bands may vary by up to 0.3 mm. Complimentary resizing is offered once within 30 days on selected rings.',
+    note: 'Stainless-steel bands are strong and hold their shape. If you are unsure, message us and we will help you choose.',
   },
   necklaces: {
     title: 'Chain lengths',
     intro:
-      'Chain lengths are measured end to end, including the clasp. The illustration below shows where each length tends to fall.',
+      'Chain lengths are measured end to end, including the clasp. The guide below shows where each length tends to fall.',
     columns: ['Length', 'Falls at', 'Best with'],
     rows: [
       ['38 cm', 'Base of the throat', 'A high neckline, alone'],
       ['40 cm', 'Collarbone', 'Fine pendants, layering'],
-      ['46 cm', 'Upper chest', 'A single coin or pearl'],
+      ['45 cm', 'Upper chest', 'A single coin or pearl'],
       ['50 cm', 'Sternum', 'Over knitwear and silk'],
     ],
-    note: 'Most chains include a 4–6 cm extender. Tell us your preferred fit and we will set the clasp before dispatch.',
+    note: 'Most chains include a short extender. Tell us your preferred fit on Instagram and we will set the clasp before dispatch.',
   },
   bracelets: {
-    title: 'Bracelets & cuffs',
+    title: 'Bracelets & bangles',
     intro:
-      'Measure the circumference of your wrist just below the wrist bone, then add 1–1.5 cm for a comfortable fit. Cuffs are open and gently adjustable.',
+      'Measure the circumference of your wrist just below the wrist bone, then add 1–1.5 cm for a comfortable fit.',
     columns: ['Bariq size', 'Wrist circumference', 'Fit'],
     rows: [
       ['S', '14–15 cm', 'Close'],
       ['M', '15–17 cm', 'Classic'],
       ['L', '17–19 cm', 'Relaxed'],
     ],
-    note: 'To adjust an open cuff, apply gentle pressure with both thumbs and never bend the metal back and forth repeatedly.',
+    note: 'If you are between sizes, choose the larger size for a relaxed fit or message us for advice.',
   },
 }
 
-export const appointmentCities = ['Dubai', 'London', 'Virtual']
+export const appointmentCities = ['Cairo', 'Alexandria', 'Online']
 
-export function buildWhatsAppLink(message) {
-  return `https://wa.me/${site.whatsapp}?text=${encodeURIComponent(message)}`
+function instagramUsername() {
+  return site.instagramHandle.replace(/^@/, '')
 }
 
-export function buildEmailLink(subject, body) {
-  return `mailto:${site.email}?subject=${encodeURIComponent(
-    subject,
-  )}&body=${encodeURIComponent(body)}`
+/**
+ * Instagram DM deep link. Instagram does not support reliably prefilling a DM,
+ * so the site also offers a “copy order details” action beside this link.
+ */
+export function buildInstagramLink() {
+  return `https://ig.me/m/${instagramUsername()}`
+}
+
+export function buildInstagramProfileLink() {
+  return site.instagram
 }
 
 // Kept for non-component helpers. Components read the active currency from
-// CurrencyContext instead, so visitors see their chosen currency everywhere.
+// CurrencyContext instead.
 export function formatPrice(value) {
   return formatMoney(value, site.currency)
 }

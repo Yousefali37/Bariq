@@ -7,6 +7,7 @@ const availabilityMap = {
   'in-stock': `${schema}/InStock`,
   limited: `${schema}/LimitedAvailability`,
   'made-to-order': `${schema}/PreOrder`,
+  'sold-out': `${schema}/SoldOut`,
 }
 
 export function graph(...nodes) {
@@ -27,13 +28,21 @@ export function organizationJsonLd() {
     logo: absoluteUrl('/favicon.svg'),
     image: absoluteUrl('/og-image.jpg'),
     sameAs: [site.instagram],
+    areaServed: {
+      '@type': 'Country',
+      name: 'Egypt',
+    },
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: 'Cairo',
+      addressCountry: 'EG',
+    },
     contactPoint: [
       {
         '@type': 'ContactPoint',
         contactType: 'customer service',
-        telephone: `+${site.whatsapp}`,
-        email: site.email,
-        availableLanguage: ['English'],
+        url: site.instagram,
+        availableLanguage: ['English', 'Arabic'],
       },
     ],
   }
@@ -46,25 +55,20 @@ export function websiteJsonLd() {
     url: site.url,
     name: site.name,
     description: site.description,
+    inLanguage: 'en',
     publisher: { '@id': `${site.url}/#organization` },
-    potentialAction: {
-      '@type': 'SearchAction',
-      target: {
-        '@type': 'EntryPoint',
-        urlTemplate: `${site.url}/search?q={search_term_string}`,
-      },
-      'query-input': 'required name=search_term_string',
-    },
   }
 }
 
 export function productJsonLd(product) {
+  const image = product.image ? [absoluteUrl(product.image)] : undefined
+
   return {
     '@type': 'Product',
     '@id': `${site.url}/piece/${product.slug}#product`,
     name: product.name,
     description: product.description || product.short,
-    image: [absoluteUrl(product.image)],
+    image,
     sku: product.slug,
     category: product.categoryLabel,
     material: product.materials,
@@ -73,31 +77,12 @@ export function productJsonLd(product) {
       '@type': 'Offer',
       url: `${site.url}/piece/${product.slug}`,
       price: product.price,
-      priceCurrency: 'USD',
+      priceCurrency: site.currency,
       availability:
         availabilityMap[product.availability] || `${schema}/InStock`,
       itemCondition: `${schema}/NewCondition`,
       seller: { '@id': `${site.url}/#organization` },
     },
-  }
-}
-
-export function articleJsonLd(article) {
-  const [day, month, year] = article.displayDate.split('.')
-  const datePublished = `20${year}-${month}-${day}`
-  return {
-    '@type': 'BlogPosting',
-    '@id': `${site.url}/journal/${article.slug}#article`,
-    headline: article.title,
-    description: article.excerpt,
-    image: [absoluteUrl(article.cover)],
-    datePublished,
-    dateModified: datePublished,
-    author: { '@type': 'Organization', name: site.name, url: site.url },
-    publisher: { '@id': `${site.url}/#organization` },
-    mainEntityOfPage: `${site.url}/journal/${article.slug}`,
-    keywords: article.tags?.join(', '),
-    articleSection: article.category,
   }
 }
 
@@ -127,12 +112,13 @@ export function breadcrumbJsonLd(items) {
   }
 }
 
-export function collectionJsonLd(name, description, items) {
+export function collectionJsonLd(name, description, items, path = '/shop') {
   return {
     '@type': 'CollectionPage',
     name,
     description,
-    url: site.url,
+    url: absoluteUrl(path),
+    inLanguage: 'en',
     mainEntity: {
       '@type': 'ItemList',
       numberOfItems: items.length,

@@ -1,31 +1,33 @@
 import { products, sortOptions } from '../data/products'
 
-export const PAGE_SIZE = 8
+export const PAGE_SIZE = 12
 
+// Prices are authored in Egyptian pounds.
 export const priceBands = [
-  { id: 'under-150', label: 'Under $150', min: 0, max: 149 },
-  { id: '150-249', label: '$150 – $249', min: 150, max: 249 },
-  { id: '250-plus', label: '$250 and above', min: 250, max: Infinity },
+  { id: 'under-1000', label: 'Under EGP 1,000', min: 0, max: 999 },
+  { id: '1000-1999', label: 'EGP 1,000 – 1,999', min: 1000, max: 1999 },
+  { id: '2000-plus', label: 'EGP 2,000 and above', min: 2000, max: Infinity },
 ]
 
 export const availabilityOptions = [
   { id: 'in-stock', label: 'In stock' },
-  { id: 'limited', label: 'Limited run' },
+  { id: 'limited', label: 'Limited stock' },
   { id: 'made-to-order', label: 'Made to order' },
+  { id: 'sold-out', label: 'Sold out' },
 ]
 
-// Single entry point for catalogue reads. When a backend or CMS arrives, only
-// this module changes: pages already consume these helpers.
-export function getAllProducts() {
-  return products
+// Single entry point for catalogue reads. Pages pass the catalogue they
+// received from CatalogContext, so admin edits appear without a rebuild.
+export function getAllProducts(list = products) {
+  return list
 }
 
-export function getProductBySlug(slug) {
-  return products.find((product) => product.slug === slug)
+export function getProductBySlug(slug, list = products) {
+  return list.find((product) => product.slug === slug)
 }
 
-export function getProductsBySlugs(slugs = []) {
-  const lookup = new Map(products.map((product) => [product.slug, product]))
+export function getProductsBySlugs(slugs = [], list = products) {
+  const lookup = new Map(list.map((product) => [product.slug, product]))
   return slugs.map((slug) => lookup.get(slug)).filter(Boolean)
 }
 
@@ -46,7 +48,7 @@ function matchesPrice(price, selected = []) {
   })
 }
 
-export function filterProducts(filters = {}) {
+export function filterProducts(filters = {}, list = products) {
   const {
     category = 'all',
     materials = [],
@@ -55,7 +57,7 @@ export function filterProducts(filters = {}) {
     price = [],
   } = filters
 
-  return products.filter((product) => {
+  return list.filter((product) => {
     if (category !== 'all' && product.category !== category) return false
     if (!matchesList(product.materialFamilies, materials)) return false
     if (!matchesList(product.colorFamilies, colors)) return false
@@ -65,19 +67,25 @@ export function filterProducts(filters = {}) {
   })
 }
 
+// Sold-out pieces stay visible, but always sit at the end of the grid.
+function soldOutLast(a, b) {
+  const aSoldOut = a.availability === 'sold-out'
+  const bSoldOut = b.availability === 'sold-out'
+  if (aSoldOut === bSoldOut) return 0
+  return aSoldOut ? 1 : -1
+}
+
 export function sortProducts(items, sort = 'curated') {
   const list = [...items]
   switch (sort) {
     case 'price-asc':
-      return list.sort((a, b) => a.price - b.price)
+      return list.sort((a, b) => soldOutLast(a, b) || a.price - b.price)
     case 'price-desc':
-      return list.sort((a, b) => b.price - a.price)
-    case 'newest':
-      return list.sort((a, b) => Number(b.newest) - Number(a.newest))
+      return list.sort((a, b) => soldOutLast(a, b) || b.price - a.price)
     case 'name':
-      return list.sort((a, b) => a.name.localeCompare(b.name))
+      return list.sort((a, b) => soldOutLast(a, b) || a.name.localeCompare(b.name))
     default:
-      return list
+      return list.sort(soldOutLast)
   }
 }
 
@@ -97,10 +105,10 @@ export function paginate(items, page = 1, perPage = PAGE_SIZE) {
   }
 }
 
-export function getFacets() {
+export function getFacets(list = products) {
   const countBy = (getValues) => {
     const map = new Map()
-    products.forEach((product) => {
+    list.forEach((product) => {
       getValues(product).forEach((value) => {
         map.set(value, (map.get(value) || 0) + 1)
       })
@@ -113,12 +121,11 @@ export function getFacets() {
     colors: countBy((product) => product.colorFamilies || []),
     availability: availabilityOptions.map((option) => ({
       ...option,
-      count: products.filter((product) => product.availability === option.id)
-        .length,
+      count: list.filter((product) => product.availability === option.id).length,
     })),
     price: priceBands.map((band) => ({
       ...band,
-      count: products.filter(
+      count: list.filter(
         (product) => product.price >= band.min && product.price <= band.max,
       ).length,
     })),

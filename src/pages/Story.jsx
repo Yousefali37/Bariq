@@ -1,20 +1,20 @@
 import { Link } from 'react-router-dom'
+import CircularSeal from '../components/CircularSeal'
+import OrderButton from '../components/OrderButton'
 import PageHeader from '../components/PageHeader'
 import Reveal from '../components/Reveal'
 import SectionHead from '../components/SectionHead'
-import CircularSeal from '../components/CircularSeal'
-import { ArrowUpRight, WhatsApp } from '../components/Icons'
-import { buildWhatsAppLink, process, site, values } from '../data/site'
+import { ArrowUpRight } from '../components/Icons'
+import { process, site, values } from '../data/site'
 import { usePageMeta } from '../hooks/usePageMeta'
 import editorial from '../assets/images/editorial.jpg'
 import atelier from '../assets/images/atelier.jpg'
 import stillLife from '../assets/images/still-life.jpg'
-import scarf from '../assets/images/scarf.jpg'
 
 export default function Story() {
   usePageMeta(
     'Our story',
-    'Bariq is a house of hand-finished jewelry and considered accessories, made in small batches between Dubai and London.',
+    'Bariq is an Egyptian jewelry house making waterproof stainless-steel pieces in gold and silver — designed to be worn every day and delivered across Egypt.',
   )
 
   return (
@@ -39,7 +39,7 @@ export default function Story() {
         />
         <div className="story-hero__caption container">
           <span>Campaign N° 01 — First Light</span>
-          <span>Dubai, 2026</span>
+          <span>Cairo, 2026</span>
         </div>
       </Reveal>
 
@@ -51,31 +51,31 @@ export default function Story() {
 
           <div className="story-narrative__body">
             <Reveal as="h2" className="story-narrative__title">
-              We began with a pearl
+              We began with a question:
               <br />
-              and an <em>imperfect shape.</em>
+              why should gold ask you to be <em>careful?</em>
             </Reveal>
 
             <Reveal as="p" className="story-narrative__lede" delay={80}>
-              <span className="dropcap">B</span>ariq started, as most small
-              houses do, with a single object — a baroque pearl that was the wrong
-              shape for a traditional setting, and all the more beautiful for it.
-              We set it in gold, wore it, and were asked about it every time.
+              <span className="dropcap">B</span>ariq began in Cairo with a simple
+              frustration. The pieces we loved were beautiful, but they came with
+              rules — take them off before you wash your hands, before the gym,
+              before the sea. We wanted jewelry that could stay on.
             </Reveal>
 
             <Reveal as="p" delay={140}>
-              From that first pearl, a way of working emerged: begin with the
-              material, remove everything that does not earn its place, and let the
-              hand of the maker remain visible. A hammer mark, an uneven edge, a
-              pearl that leans slightly to one side — these are not imperfections
-              to be corrected. They are the record of a person making a thing.
+              So we started with the material. High-grade 316L stainless steel,
+              finished in warm gold PVD or brushed silver. It is strong, it does
+              not tarnish like plated brass, and it is comfortable enough to forget
+              you are wearing it. The finish is bonded to the steel rather than
+              layered on top.
             </Reveal>
 
             <Reveal as="p" delay={190}>
-              Today Bariq is a small studio between Dubai and London, working with
-              recycled silver, 24k gold vermeil, freshwater pearls, Italian leather
-              and plant-based acetate. We make in batches small enough to inspect
-              every piece by hand, and we release them slowly.
+              From there, the collection grew slowly: a fine chain at the
+              collarbone, a hoop that catches the light, a signet ring, a bangle
+              that stays on through everything. Quiet shapes, a comfortable weight,
+              and a finish that works with what you already own.
             </Reveal>
 
             <Reveal className="story-narrative__signature" delay={240}>
@@ -161,10 +161,10 @@ export default function Story() {
           <Reveal className="story-atelier__media" variant="mask">
             <img
               src={atelier}
-              alt="Hands finishing a piece of jewelry in the Bariq atelier"
+              alt="Hands finishing a piece of jewelry in the Bariq studio"
               loading="lazy"
             />
-            <span className="story-atelier__caption">The atelier, Dubai.</span>
+            <span className="story-atelier__caption">The studio, Cairo.</span>
           </Reveal>
 
           <div className="story-atelier__body">
@@ -173,23 +173,23 @@ export default function Story() {
               In the studio
             </Reveal>
             <Reveal as="h2" className="story-atelier__title" delay={70}>
-              Five hands,
+              Small on purpose,
               <br />
-              <em>one object.</em>
+              <em>personal by design.</em>
             </Reveal>
             <Reveal as="p" className="story-atelier__text" delay={140}>
-              A Bariq piece passes through several pairs of hands before it reaches
-              you. One shapes, one hammers, one sets, one polishes, one wraps. The
-              last step is always the same: a slow inspection under the window, and
-              a soft cloth.
+              We keep the studio small so every piece can be checked by hand before
+              it is wrapped. A Bariq order is not packed by a system — it is packed
+              by someone who knows the piece by name.
             </Reveal>
             <Reveal as="p" className="story-atelier__text" delay={190}>
-              We keep the studio small on purpose. It means we know every piece by
-              name, and every customer by the conversation we had about it.
+              It also means we can answer you properly. Every order begins with an
+              Instagram message, and every message is read by a person. Tell us your
+              city, ask about a size, or send us a piece you have in mind.
             </Reveal>
             <Reveal className="story-atelier__action" delay={240}>
-              <Link to="/journal/inside-the-atelier" className="link-underline">
-                Inside the atelier
+              <Link to="/shop" className="link-underline">
+                Explore the collection
                 <ArrowUpRight size={14} />
               </Link>
             </Reveal>
@@ -201,7 +201,7 @@ export default function Story() {
         <Reveal className="story-still__media" variant="mask">
           <img
             src={stillLife}
-            alt="A still life of Bariq accessories on travertine"
+            alt="A still life of gold jewelry on a warm studio table"
             loading="lazy"
           />
         </Reveal>
@@ -212,15 +212,20 @@ export default function Story() {
           <Reveal as="h2" delay={60}>
             Chosen for how
             <br />
-            it <em>ages.</em>
+            it <em>lives.</em>
           </Reveal>
           <Reveal as="p" delay={120}>
-            Gold vermeil that softens with wear. Leather that darkens where you
-            hold it. Silk that loses its stiffness and learns your neck. We choose
-            materials that improve with time, because the pieces are meant to stay.
+            Stainless steel is forgiving in the best way. It does not mind water,
+            it holds its shape, and it keeps a fine polish. Our gold PVD finish adds
+            warmth without the delicacy of plating. Rinse with fresh water after
+            swimming, dry with a soft cloth, and it will keep its colour.
           </Reveal>
           <Reveal className="story-still__image" variant="mask" delay={160}>
-            <img src={scarf} alt="Warm sand silk scarf" loading="lazy" />
+            <img
+              src={editorial}
+              alt="Warm gold jewelry worn in afternoon light"
+              loading="lazy"
+            />
           </Reveal>
         </div>
       </section>
@@ -237,25 +242,21 @@ export default function Story() {
             <em>the collection.</em>
           </Reveal>
           <Reveal as="p" className="concierge-cta__text" delay={140}>
-            Every piece is available by private inquiry, and appointments can be
-            arranged in Dubai, London or virtually, wherever you are.
+            Twenty-one pieces to begin with, and more on the way. Every order is
+            placed by Instagram DM, with delivery across Egypt and cash on delivery.
           </Reveal>
           <Reveal className="concierge-cta__actions" delay={200}>
-            <Link to="/collections" className="btn btn--dark">
+            <Link to="/shop" className="btn btn--dark">
               Explore the collection
               <ArrowUpRight size={15} />
             </Link>
-            <a
+            <OrderButton
               className="link-underline"
-              href={buildWhatsAppLink(
-                'Hello Bariq, I would like to arrange a private appointment.',
-              )}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <WhatsApp size={15} />
-              Arrange an appointment
-            </a>
+              message={`Hello ${site.name}, I would like to know more about the collection.`}
+              label="Message us on Instagram"
+              copiedLabel="Copied — opening Instagram"
+              iconSize={15}
+            />
           </Reveal>
         </div>
       </section>

@@ -1,12 +1,7 @@
 import { Link } from 'react-router-dom'
-import {
-  buildWhatsAppLink,
-  navLinks,
-  productCategories,
-  site,
-} from '../data/site'
-import NewsletterForm from './NewsletterForm'
-import { ArrowUpRight, Instagram, Mail, WhatsApp } from './Icons'
+import { navLinks, productCategories, site } from '../data/site'
+import { ArrowUpRight, Instagram } from './Icons'
+import OrderButton from './OrderButton'
 
 export default function Footer() {
   const year = new Date().getFullYear()
@@ -16,13 +11,21 @@ export default function Footer() {
       <div className="container">
         <div className="footer__top">
           <div className="footer__newsletter">
-            <span className="eyebrow eyebrow--gold">Notes from the atelier</span>
+            <span className="eyebrow eyebrow--gold">Order on Instagram</span>
             <h2>
-              A little light,
+              One message,
               <br />
-              <em>once a month.</em>
+              <em>then it is yours.</em>
             </h2>
-            <NewsletterForm />
+            <p className="footer__note">
+              Send us the piece you love and your city. We will confirm
+              availability, the delivery fee and cash on delivery personally.
+            </p>
+            <OrderButton
+              className="btn btn--light"
+              label="Open Instagram DM"
+              copiedLabel="Copied — opening Instagram"
+            />
           </div>
 
           <div className="footer__columns">
@@ -36,34 +39,23 @@ export default function Footer() {
               <Link to="/contact">Contact</Link>
             </div>
             <div className="footer__column">
-              <h3 className="footer__heading">Collections</h3>
+              <h3 className="footer__heading">Shop</h3>
               {productCategories
                 .filter((category) => category.id !== 'all')
                 .map((category) => (
-                  <Link
-                    key={category.id}
-                    to={`/collections?category=${category.id}`}
-                  >
+                  <Link key={category.id} to={`/shop?category=${category.id}`}>
                     {category.label}
                   </Link>
                 ))}
             </div>
             <div className="footer__column">
-              <h3 className="footer__heading">Concierge</h3>
-              <a
-                href={buildWhatsAppLink(
-                  'Hello Bariq, I would like to speak with the concierge.',
-                )}
-                target="_blank"
-                rel="noreferrer"
-              >
-                WhatsApp
-              </a>
-              <a href={`mailto:${site.email}`}>Email</a>
+              <h3 className="footer__heading">Ordering</h3>
               <a href={site.instagram} target="_blank" rel="noreferrer">
-                Instagram
+                {site.instagramHandle}
               </a>
-              <Link to="/contact">Appointments</Link>
+              <Link to="/contact">Delivery &amp; payment</Link>
+              <Link to="/terms">Returns</Link>
+              <Link to="/privacy">Privacy</Link>
             </div>
           </div>
         </div>
@@ -95,17 +87,7 @@ export default function Footer() {
             >
               <Instagram size={16} />
             </a>
-            <a
-              href={buildWhatsAppLink('Hello Bariq, I have a question.')}
-              target="_blank"
-              rel="noreferrer"
-              aria-label="Bariq on WhatsApp"
-            >
-              <WhatsApp size={16} />
-            </a>
-            <a href={`mailto:${site.email}`} aria-label="Email Bariq">
-              <Mail size={16} />
-            </a>
+            <span className="footer__delivery">{site.location}</span>
             <button
               type="button"
               className="footer__top-link"

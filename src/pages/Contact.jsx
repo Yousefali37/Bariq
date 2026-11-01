@@ -1,213 +1,118 @@
-import { useState } from 'react'
 import Accordion from '../components/Accordion'
+import OrderButton from '../components/OrderButton'
 import PageHeader from '../components/PageHeader'
 import Reveal from '../components/Reveal'
-import {
-  ArrowUpRight,
-  Instagram,
-  Mail,
-  MapPin,
-  WhatsApp,
-} from '../components/Icons'
-import { buildWhatsAppLink, faqs, site } from '../data/site'
+import { ArrowUpRight, Instagram, MapPin, Truck, Wallet } from '../components/Icons'
+import { faqs, site } from '../data/site'
 import { usePageMeta } from '../hooks/usePageMeta'
 
-const subjects = [
-  'A piece from the collection',
-  'A private appointment',
-  'A gift or commission',
-  'Care and repairs',
-  'Something else',
+const steps = [
+  {
+    number: '01',
+    title: 'Choose your piece',
+    body: 'Browse the collection and save anything you love to your wishlist. Sold-out pieces stay visible so you can still save them.',
+  },
+  {
+    number: '02',
+    title: 'Message us on Instagram',
+    body: 'Tap “Order on Instagram”. The site copies the piece name, price and options for you — paste them into the DM and add your city.',
+  },
+  {
+    number: '03',
+    title: 'Confirm and receive',
+    body: 'We confirm availability, the delivery fee for your city and cash on delivery. Your order is then packed by hand and sent.',
+  },
 ]
-
-const initialForm = {
-  name: '',
-  email: '',
-  subject: subjects[0],
-  message: '',
-}
 
 export default function Contact() {
   usePageMeta(
-    'Concierge',
-    'Speak with the Bariq concierge about a piece, a gift, a private appointment or an order. Available by WhatsApp, email and appointment.',
+    'Contact & ordering',
+    'How to order Bariq jewelry in Egypt: Instagram DM, cash on delivery, delivery to all governorates, and answers to common questions about sizing, sold-out pieces and returns.',
   )
-
-  const [form, setForm] = useState(initialForm)
-  const [status, setStatus] = useState('idle')
-
-  const update = (field) => (event) => {
-    setForm((current) => ({ ...current, [field]: event.target.value }))
-    if (status !== 'idle') setStatus('idle')
-  }
-
-  const message = `Hello Bariq,\n\n${form.message}\n\n— ${form.name}${
-    form.email ? ` (${form.email})` : ''
-  }\nSubject: ${form.subject}`
-
-  const submit = (event) => {
-    event.preventDefault()
-    const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())
-
-    if (!form.name.trim() || !validEmail || !form.message.trim()) {
-      setStatus('error')
-      return
-    }
-
-    setStatus('success')
-    window.open(buildWhatsAppLink(message), '_blank', 'noopener,noreferrer')
-  }
-
-  const mailto = `mailto:${site.email}?subject=${encodeURIComponent(
-    `Bariq inquiry — ${form.subject}`,
-  )}&body=${encodeURIComponent(message)}`
 
   return (
     <>
       <PageHeader
-        eyebrow="The concierge"
+        eyebrow="Ordering & contact"
         title={
           <>
-            Tell us what
+            One message,
             <br />
-            you are <em>looking for.</em>
+            then it is <em>yours.</em>
           </>
         }
-        intro="A question about a piece, a gift, a private appointment — write to us and a person, not a system, will answer. Usually within one working day."
+        intro="Bariq is a catalogue, not a checkout. Every order is placed by Instagram DM so we can confirm availability, the delivery fee for your city and cash on delivery personally."
       />
 
       <section className="contact">
         <div className="container contact__grid">
           <div className="contact__form-wrap">
             <Reveal className="contact__form-head">
-              <span className="eyebrow">Send a note</span>
-              <h2>We read every message.</h2>
+              <span className="eyebrow">How it works</span>
+              <h2>Three quiet steps.</h2>
             </Reveal>
 
-            <Reveal as="form" className="contact-form" onSubmit={submit} noValidate delay={80}>
-              <div className="field-row">
-                <div className="field">
-                  <label htmlFor="contact-name">Name</label>
-                  <input
-                    id="contact-name"
-                    name="name"
-                    type="text"
-                    autoComplete="name"
-                    placeholder="Your name"
-                    value={form.name}
-                    onChange={update('name')}
-                    aria-invalid={status === 'error' && !form.name.trim()}
-                  />
-                </div>
-                <div className="field">
-                  <label htmlFor="contact-email">Email</label>
-                  <input
-                    id="contact-email"
-                    name="email"
-                    type="email"
-                    autoComplete="email"
-                    placeholder="you@email.com"
-                    value={form.email}
-                    onChange={update('email')}
-                    aria-invalid={status === 'error' && !form.email.trim()}
-                  />
-                </div>
-              </div>
+            <div className="contact-steps">
+              {steps.map((step, index) => (
+                <Reveal className="contact-step" delay={index * 80} key={step.number}>
+                  <span className="contact-step__number">{step.number}</span>
+                  <div>
+                    <h3>{step.title}</h3>
+                    <p>{step.body}</p>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
 
-              <div className="field">
-                <label htmlFor="contact-subject">What is this about?</label>
-                <div className="field__select">
-                  <select
-                    id="contact-subject"
-                    name="subject"
-                    value={form.subject}
-                    onChange={update('subject')}
-                  >
-                    {subjects.map((subject) => (
-                      <option key={subject} value={subject}>
-                        {subject}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              <div className="field">
-                <label htmlFor="contact-message">Message</label>
-                <textarea
-                  id="contact-message"
-                  name="message"
-                  rows={5}
-                  placeholder="Tell us a little about what you have in mind…"
-                  value={form.message}
-                  onChange={update('message')}
-                  aria-invalid={status === 'error' && !form.message.trim()}
-                />
-              </div>
-
-              <div className="contact-form__actions">
-                <button type="submit" className="btn btn--dark">
-                  <WhatsApp size={17} />
-                  Send via WhatsApp
-                </button>
-                <a href={mailto} className="link-underline">
-                  Send by email instead
-                  <ArrowUpRight size={14} />
-                </a>
-              </div>
-
-              <p
-                className={`contact-form__note ${
-                  status === 'error' ? 'is-error' : ''
-                } ${status === 'success' ? 'is-success' : ''}`}
-                aria-live="polite"
-              >
-                {status === 'error'
-                  ? 'Please add your name, a valid email and a short message.'
-                  : status === 'success'
-                    ? 'Your message is ready in WhatsApp — press send there and we will reply personally.'
-                    : 'Your note opens in WhatsApp. Prefer email? Use the link beside the button.'}
+            <Reveal className="contact-order" delay={240}>
+              <OrderButton
+                className="btn btn--dark"
+                message={`Hello ${site.name}, I would like to place an order.\n\nThe piece: \nMy city: \nPlease confirm availability, the delivery fee and cash on delivery.`}
+                label="Open Instagram DM"
+                copiedLabel="Copied — opening Instagram"
+              />
+              <p>
+                Instagram cannot prefill a message, so we copy your details to the
+                clipboard first. Paste them into the DM and press send.
               </p>
             </Reveal>
           </div>
 
           <aside className="contact__aside">
             <Reveal className="contact-card contact-card--dark" variant="fade">
-              <span className="eyebrow eyebrow--gold">Fastest</span>
-              <h3>WhatsApp the studio</h3>
+              <span className="eyebrow eyebrow--gold">The fastest way</span>
+              <h3>Instagram DM</h3>
               <p>
-                The quickest way to ask about availability, shipping or a piece you
-                have seen.
+                The only place orders are taken. Ask about a piece, a size, a
+                restock or the delivery fee for your city.
               </p>
               <a
                 className="btn btn--light btn--small"
-                href={buildWhatsAppLink(
-                  'Hello Bariq, I would like to speak with the concierge.',
-                )}
+                href={site.instagram}
                 target="_blank"
                 rel="noreferrer"
               >
-                <WhatsApp size={16} />
-                Open WhatsApp
+                <Instagram size={16} />
+                {site.instagramHandle}
               </a>
-              <span className="contact-card__detail">{site.whatsappDisplay}</span>
+              <span className="contact-card__detail">
+                Orders · Sizing · Restocks
+              </span>
             </Reveal>
 
             <Reveal className="contact-card" delay={80}>
               <div className="contact-card__row">
-                <Mail size={16} />
+                <Truck size={16} />
                 <div>
-                  <span className="contact-card__label">Email</span>
-                  <a href={`mailto:${site.email}`}>{site.email}</a>
+                  <span className="contact-card__label">Delivery</span>
+                  <span>All Egyptian governorates</span>
                 </div>
               </div>
               <div className="contact-card__row">
-                <Instagram size={16} />
+                <Wallet size={16} />
                 <div>
-                  <span className="contact-card__label">Instagram</span>
-                  <a href={site.instagram} target="_blank" rel="noreferrer">
-                    {site.instagramHandle}
-                  </a>
+                  <span className="contact-card__label">Payment</span>
+                  <span>Cash on delivery</span>
                 </div>
               </div>
               <div className="contact-card__row">
@@ -224,18 +129,20 @@ export default function Contact() {
             </Reveal>
 
             <Reveal className="contact-appointment" delay={140}>
-              <span className="eyebrow">By appointment</span>
-              <h3>Private viewings</h3>
-              <p>{site.appointment}</p>
+              <span className="eyebrow">Good to know</span>
+              <h3>Delivery fees</h3>
+              <p>
+                Shipping is calculated by city and confirmed before dispatch. The
+                exact total — piece plus delivery — is agreed on Instagram before
+                your order is sent.
+              </p>
               <a
                 className="link-underline"
-                href={buildWhatsAppLink(
-                  'Hello Bariq, I would like to arrange a private appointment.',
-                )}
+                href={site.instagram}
                 target="_blank"
                 rel="noreferrer"
               >
-                Request a time
+                Ask for your city
                 <ArrowUpRight size={14} />
               </a>
             </Reveal>
@@ -256,8 +163,8 @@ export default function Contact() {
               <em>answered.</em>
             </Reveal>
             <Reveal as="p" delay={120}>
-              A few things people ask us most. If yours is not here, the concierge
-              is one message away.
+              A few things people ask us most. If yours is not here, send us a
+              message on Instagram — a person will answer.
             </Reveal>
           </div>
 
