@@ -187,3 +187,4 @@ first via `prebuild`.
 There is intentionally no cart, checkout, account system, discount code, gift
 card, newsletter, blog or care-guide page.
 "# bariq" 
+"# bariq" 
